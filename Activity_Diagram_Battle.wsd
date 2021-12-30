@@ -1,0 +1,80 @@
+@startuml MonsterCardBattle
+actor       Player1     as Player1
+actor       Player2     as Player2
+participant Server      as Server
+participant BattleLogic as GameLogic 
+database    Database    as DB
+
+Player1 -> Server: requestFight
+activate Server
+Player2 -> Server: requestFight
+
+GameLogic <- Server: initFight
+activate GameLogic
+GameLogic -> DB: requestDeckPlayer1
+activate DB
+GameLogic <- DB: receiveDeckPlayer1
+GameLogic -> DB: requestDeckPlayer2
+GameLogic <- DB: receiveDeckPlayer2
+deactivate DB
+Server <- GameLogic: finishedPrep
+
+loop while both players have cards and round number < 100
+    Server -> GameLogic: drawCardPlayer1
+    GameLogic -> Server: cardDrawnPlayer1
+    Server -> GameLogic: drawCardPlayer2
+    GameLogic -> Server: cardDrawnPlayer2
+
+    Server -> GameLogic: calculateRoundWinner
+    
+    alt both Monster Cards
+        GameLogic -> GameLogic: compareSpecialties
+    else at least 1 Spell Card 
+        GameLogic -> GameLogic: compareElementType
+    end
+
+    GameLogic -> GameLogic: calculateWinner
+    GameLogic -> GameLogic: writeToLog
+    note right: e.g.: Player1: FireSpell (10 Damage) vs Player: WaterSpell (20 Damage)\n => 10 VS 20 -> 05 VS 40 => WaterSpell wins
+
+    alt winner player 1
+        GameLogic -> GameLogic: moveCardsToPlayer1Deck
+    else winner player 2
+        GameLogic -> GameLogic: moveCardsToPlayer2Deck
+    else draw
+        GameLogic -> GameLogic: returnCardsToDecks
+    end
+
+    GameLogic -> Server: returnRoundWinner 
+
+    Server -> Server: startNextRound
+end
+
+Server -> GameLogic: endFight
+GameLogic -> Server: returnFightLog
+destroy GameLogic
+
+Player1 <-- Server: sendFightLog
+Player2 <-- Server: sendFightLog
+
+alt Player 2 Cards in Deck = 0
+    Server --> Player1: winner
+    Server --> Player2: loser
+    Server -> DB: increasePlayer1ELO
+    activate DB
+    Server -> DB: decreasePlayer2ELO
+    deactivate DB
+else Player 1 Cards in Deck = 0
+    Server --> Player1: loser
+    Server --> Player2: winner
+    Server -> DB: increasePlayer2ELO
+    activate DB
+    Server -> DB: decreasePlayer1ELO
+    deactivate DB
+else Round number >= 100
+    Server --> Player1: draw
+    Server --> Player2: draw
+end
+
+deactivate Server
+@enduml
