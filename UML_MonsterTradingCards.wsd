@@ -1,15 +1,67 @@
 @startuml MonsterTradingCards
 class Server
 
+class ConnectionHandler
+
+' Command/Routing still missing
+
 class Logger
 
 class Repository
 
 class PostGresDatabase
 
-class BattleLogic
+enum BattleState {
+    WAITING
+    IN_PROGRESS
+    DONE
+    NONE
+}
 
-class Player
+' How will a battle be done
+
+class Battle
+
+class BattleLogic {
+    -Player p1
+    -Player p2
+    -BattleState state
+
+
+}
+' is Player really necessary?
+class Player {
+    -int playerId
+    -string username
+    -int elo
+    -CardStack stack
+    -CardDeck deck
+
+    +int getPlayerId()
+    +void setPlayerId(int playerId)
+    +string getUsername()
+    +void setUsername(string username)
+    +int getElo()
+    +void setElo(int elo)
+}
+
+class CardStack {
+    -list<Card> allCards
+
+    +list<Card> getAllCards()
+    +Card getCardByIndex(int cardIdx)
+    +Card getCardById(int cardId)
+    +void addCardToStack(Card card)
+}
+
+class CardDeck {
+    -list<Card> cards
+
+    +Card getCardByIndex(int cardIdx)
+    +Card getCardById(int cardId)
+    +void addCard(Card card)
+    +int getAmountCards()
+}
 
 abstract class Card {
     #int cardId
@@ -24,11 +76,26 @@ abstract class Card {
     +void setDamage(double damage)
     +int getPlayerId()
     +void setPlayerId(int playerId)
+    +int getCardId()
+    +void setCardId(int cardId)
 }
 
-enum ElementType
+enum ElementType {
+    WATER
+    FIRE
+    NORMAL
+}
 
-enum MonsterType
+enum MonsterType {
+    GOBLIN
+    DRAGON
+    WIZARD
+    ORK
+    KNIGHT
+    KRAKEN
+    ELVE
+    TROLL
+}
 
 class MonsterCard {
     -MonsterType MonsterType
@@ -42,7 +109,10 @@ class SpellCard {
 
 }
 
+Card - ElementType
+MonsterCard - MonsterType
 
 MonsterCard --|> Card
 SpellCard --|> Card
+
 @enduml
