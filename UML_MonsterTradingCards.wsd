@@ -1,0 +1,48 @@
+@startuml MonsterTradingCards
+class Server
+
+class Logger
+
+class Repository
+
+class PostGresDatabase
+
+class BattleLogic
+
+class Player
+
+abstract class Card {
+    #int cardId
+    #int playerId
+    #string cardName
+    #double damage
+    #ElementType elementType
+
+    +ElementType getElementType()
+    +void setElementType(ElementType elementType)
+    +double getDamage()
+    +void setDamage(double damage)
+    +int getPlayerId()
+    +void setPlayerId(int playerId)
+}
+
+enum ElementType
+
+enum MonsterType
+
+class MonsterCard {
+    -MonsterType MonsterType
+
+
+    +MonsterType getMonsterType()
+    +void setMonsterType(MonsterType monsterType)
+}
+
+class SpellCard {
+
+}
+
+
+MonsterCard --|> Card
+SpellCard --|> Card
+@enduml
