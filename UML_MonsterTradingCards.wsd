@@ -1,13 +1,59 @@
 @startuml MonsterTradingCards
-class Server
+class Server {
+    -int port
 
-class ConnectionHandler
+    +void listen()
+}
 
-' Command/Routing still missing
+class Connection {
+    -string ipAddress
+    -Router router
 
-class Logger
+    +void HandleConnection()
+}
 
-class Repository
+class User {
+    -string username
+    -int userId
+
+    +int getUserId()
+    +void setUserId(int userId)
+    +string getUsername()
+    +void setUsername(string username)
+}
+
+class Router
+
+interface IRoute
+
+class Logger {
+    -string logfile
+
+    +void log(string msg)
+    +void debug(string msg)
+    +void error(string msg)
+}
+
+class Repository {
+    -IDatabase db
+
+    +Card getCardById(string cardId)
+    +Card getCardByName(string cardName)
+    +bool registerUser(string username, string password)
+    +User login(string username, string password)
+    +bool changeElo(int userId, int eloChange)
+    +bool addBattle(int winnerId, int loserId, string logfile)
+    +bool addPackage(string packageId, list<Card> cards)
+    +Package getPackage(string packageId)
+    +Package aquireRandomPackage()
+    +CardDeck getDeck(User user)
+    +bool setDeck(User user, CardDeck)
+    +CardStack getAllCards(User user)
+    +Stats getUserStats(User user)
+    +Scoreboard getScoreboard()
+}
+
+interface IDatabase
 
 class PostGresDatabase
 
@@ -18,53 +64,59 @@ enum BattleState {
     NONE
 }
 
-' How will a battle be done
+class Battle {
+    -int playerId1
+    -int playerId2
+    -CardDeck deckP1
+    -CardDeck deckP2
+    -BattleState state
+    -BattleLogic battleLogic
 
-class Battle
+    +Battle(int playerId1, int playerId2)
+    +int runBattle()
+    -void adjustDecks()
+}
 
 class BattleLogic {
-    -Player p1
-    -Player p2
-    -BattleState state
+    -Logger logger
 
-
-}
-' is Player really necessary?
-class Player {
-    -int playerId
-    -string username
-    -int elo
-    -CardStack stack
-    -CardDeck deck
-
-    +int getPlayerId()
-    +void setPlayerId(int playerId)
-    +string getUsername()
-    +void setUsername(string username)
-    +int getElo()
-    +void setElo(int elo)
+    +int runRound(Card cardP1, Card cardP2)
+    -int calculateRoundWinner(Card cardP1, Card cardP2)
+    -void compareCards(Card cardP1, Card cardP2)
 }
 
 class CardStack {
     -list<Card> allCards
+    -int playerId
 
     +list<Card> getAllCards()
     +Card getCardByIndex(int cardIdx)
-    +Card getCardById(int cardId)
+    +Card getCardById(string cardId)
     +void addCardToStack(Card card)
 }
 
 class CardDeck {
     -list<Card> cards
+    -int playerId
 
     +Card getCardByIndex(int cardIdx)
-    +Card getCardById(int cardId)
+    +Card getCardById(string cardId)
     +void addCard(Card card)
     +int getAmountCards()
 }
 
+class Package {
+    -string packageId
+    -list<Card> cards
+
+    +string getPackageId()
+    +void setPackageId(string packageId)
+    +list<Card> getCards()
+    +void setCards(list<Card> cards)
+}
+
 abstract class Card {
-    #int cardId
+    #string cardId
     #int playerId
     #string cardName
     #double damage
@@ -114,5 +166,7 @@ MonsterCard - MonsterType
 
 MonsterCard --|> Card
 SpellCard --|> Card
+
+PostGresDatabase --|> IDatabase
 
 @enduml
