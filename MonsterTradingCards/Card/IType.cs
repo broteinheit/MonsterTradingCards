@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Card
 {
-    internal enum ElementType
+    internal interface IType
     {
-        WATER,
-        FIRE,
-        NORMAL
+        string GetTypeName();
     }
 }

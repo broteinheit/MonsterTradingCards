@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MonsterTradingCards.Card.CardType;
+using MonsterTradingCards.Card.ElementType;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,10 +10,8 @@ namespace MonsterTradingCards.Card
 {
     class SpellCard : Card
     {
-        public SpellCard(string cardId, string cardName, int playerId, double damage, ElementType elementType)
-        {
-            initCard(cardId, cardName, playerId, damage, elementType);
-        }
+        public SpellCard(string cardId, int playerId, double damage, IElementType elementType)
+            : base(cardId, playerId, damage, elementType, new SpellType()) { }
 
         public override bool Equals(object obj)
         {

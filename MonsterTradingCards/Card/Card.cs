@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MonsterTradingCards.Card.CardType;
+using MonsterTradingCards.Card.ElementType;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,19 +10,29 @@ namespace MonsterTradingCards.Card
 {
     abstract class Card
     {
-        protected void initCard(string cardId, string cardName, int playerId, double damage, ElementType elementType)
+        public string GetCardName()
+        {
+            return elementType.GetTypeName() + cardType.GetTypeName();
+        }
+
+        protected Card(string cardId, int playerId, double damage, IElementType elementType, ICardType cardType)
         {
             this.cardId = cardId;
-            this.cardName = cardName;
             this.playerId = playerId;
             this.damage = damage;
             this.elementType = elementType;
+            this.cardType = cardType;
+        }
+
+        public void adjustDamageByElementType(IElementType otherCardElementType)
+        {
+            damage *= elementType.Compare(otherCardElementType);
         }
 
         public string cardId { get; protected set; }
-        public string cardName { get; protected set; }
         public int playerId { get; protected set; }
+        public IElementType elementType { get; protected set; }
+        public ICardType cardType { get; protected set; }
         public double damage { get; protected set; }
-        public ElementType elementType { get; protected set; }
     }
 }

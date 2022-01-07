@@ -1,4 +1,6 @@
-﻿using System;
+﻿using MonsterTradingCards.Card.ElementType;
+using MonsterTradingCards.Card.CardType;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,13 +10,9 @@ namespace MonsterTradingCards.Card
 {
     class MonsterCard : Card
     {
-        public MonsterCard(string cardId, string cardName, int playerId, double damage, ElementType elementType, MonsterType monsterType)
-        {
-            initCard(cardId, cardName, playerId, damage, elementType);
-            this.monsterType = monsterType;
-        }
-
-        public MonsterType monsterType { get; private set; }
+        public MonsterCard(string cardId, int playerId, double damage, IElementType elementType, ICardType monsterType)
+            : base(cardId, playerId, damage, elementType, monsterType) { }
+        
 
         public override bool Equals(object obj)
         {
