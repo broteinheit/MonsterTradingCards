@@ -1,21 +1,35 @@
 ﻿using MonsterTradingCards.Battle;
-using MonsterTradingCards.Card;
-using MonsterTradingCards.Card.CardType;
-using MonsterTradingCards.Card.ElementType;
+using MonsterTradingCards.Cards;
+using MonsterTradingCards.Cards.CardType;
+using MonsterTradingCards.Cards.ElementType;
 
 public class Program
 {
     public static int Main()
     {
-        BattleLogic battleLogic = new BattleLogic();
+        List<Card> deckP1 = new List<Card>()
+        {
+            new Card("a", 1, 15, new FireElementType(), new ElveMonsterType()),
+            new Card("b", 1, 20, new WaterElementType(), new GoblinMonsterType()),
+            new Card("c", 1, 25, new NormalElementType(), new KnightMonsterType()),
+            new Card("d", 1, 20, new WaterElementType(), new SpellType())
+        };
 
-        Card monsterCard = new Card("a", 1, 20, new FireElementType(), new ElveMonsterType());
-        Card spellCard = new Card("b", 1, 25, new WaterElementType(), new DragonMonsterType());
+        List<Card> deckP2 = new List<Card>()
+        {
+            new Card("e", 1, 20, new WaterElementType(), new OrkMonsterType()),
+            new Card("f", 1, 20, new FireElementType(), new DragonMonsterType()),
+            new Card("g", 1, 20, new WaterElementType(), new WizardMonsterType()),
+            new Card("h", 1, 20, new NormalElementType(), new SpellType())
+        };
 
-        Console.WriteLine("monsterCard: " + monsterCard.GetCardName());
-        Console.WriteLine("spellCard: " + spellCard.GetCardName());
+        BattleHandler battle = new BattleHandler(123, 456);
+        battle.DisconnectPlayer(456);
+        battle.ConnectPlayer(456);
 
-        Console.WriteLine("battleLogic: " + battleLogic.RunRound(monsterCard, spellCard));
+        battle.cardsP1 = deckP1;
+        battle.cardsP2 = deckP2;
+        battle.StartBattle();
 
         return 0;
     }

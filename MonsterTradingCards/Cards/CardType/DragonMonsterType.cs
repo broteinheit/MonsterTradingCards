@@ -1,20 +1,24 @@
-﻿using MonsterTradingCards.Card.ElementType;
+﻿using MonsterTradingCards.Cards.ElementType;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCards.Card.CardType
+namespace MonsterTradingCards.Cards.CardType
 {
-    internal class GoblinMonsterType : ICardType
+    internal class DragonMonsterType : ICardType
     {
         public int ConsiderSpecialty(ICardType otherType, IElementType elementType)
         {
             switch (otherType)
             {
-                case DragonMonsterType:
-                    return 0;
+                case ElveMonsterType:
+                    if (elementType.GetType() == typeof(FireElementType))
+                    {
+                        return 0;
+                    }
+                    return 1;
                 default:
                     return 1;
             }
@@ -22,7 +26,7 @@ namespace MonsterTradingCards.Card.CardType
 
         public string GetTypeName()
         {
-            return "Goblin";
+            return "Dragon";
         }
     }
 }

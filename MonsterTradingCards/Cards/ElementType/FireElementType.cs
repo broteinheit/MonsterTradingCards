@@ -1,26 +1,26 @@
-﻿using MonsterTradingCards.Card.CardType;
+﻿using MonsterTradingCards.Cards.CardType;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCards.Card.ElementType
+namespace MonsterTradingCards.Cards.ElementType
 {
-    internal class WaterElementType : IElementType
+    internal class FireElementType : IElementType
     {
         public string GetTypeName()
         {
-            return "Water";
+            return "Fire";
         }
 
         public double Compare(IElementType otherElementType)
         {
             switch (otherElementType)
             {
-                case NormalElementType:
+                case WaterElementType:
                     return 0.5;
-                case FireElementType:
+                case NormalElementType:
                     return 2;
                 default:
                     return 1;

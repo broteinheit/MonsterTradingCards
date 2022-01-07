@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCards.Card
+namespace MonsterTradingCards.Battle
 {
-    internal interface IType
+    internal enum BattleState
     {
-        string GetTypeName();
+        WAITING,
+        IN_PROGRESS,
+        DONE,
+        NONE
     }
 }

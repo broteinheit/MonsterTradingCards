@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MonsterTradingCards.Card;
-using MonsterTradingCards.Card.CardType;
+using MonsterTradingCards.Cards;
+using MonsterTradingCards.Cards.CardType;
 
 namespace MonsterTradingCards.Battle
 {
@@ -12,7 +12,7 @@ namespace MonsterTradingCards.Battle
     {
         //TODO: Logger
 
-        public int RunRound(Card.Card cardP1, Card.Card cardP2)
+        public int RunRound(Card cardP1, Card cardP2)
         {
             //Consider Specialties
             cardP1.ConsiderSpecialties(cardP2.cardType, cardP2.elementType);
@@ -30,7 +30,7 @@ namespace MonsterTradingCards.Battle
         }
 
 
-        private int CalculateWinner(Card.Card cardP1, Card.Card cardP2)
+        private int CalculateWinner(Card cardP1, Card cardP2)
         {
             if (cardP1.damage > cardP2.damage)
             {
