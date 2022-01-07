@@ -12,30 +12,41 @@ namespace MonsterTradingCards.Battle
     {
         //TODO: Logger
 
-        public int runRound(Card.Card cardP1, Card.Card cardP2)
+        public int RunRound(Card.Card cardP1, Card.Card cardP2)
         {
-            
-            
-            //Not Monster Fight -> consider Element
-            if (cardP1.cardType.GetType() == typeof(SpellType) || cardP2.cardType.GetType() == typeof(SpellType))
+            //Consider Specialties
+            cardP1.ConsiderSpecialties(cardP2.cardType, cardP2.elementType);
+            cardP2.ConsiderSpecialties(cardP1.cardType, cardP1.elementType);
+
+            //Not Monster Fight -> consider Element (only when both cards have damage values > 0, otherwise winner is already known)
+            if ((cardP1.cardType.GetType() == typeof(SpellType) || cardP2.cardType.GetType() == typeof(SpellType))
+                && cardP1.damage > 0 && cardP2.damage > 0)
             {
-                adjustForElement(ref cardP1, ref cardP2);
+                cardP1.AdjustDamageByElementType(cardP2.elementType);
+                cardP2.AdjustDamageByElementType(cardP1.elementType);
             }
 
-
-            return 0;
+            return CalculateWinner(cardP1, cardP2);
         }
 
-        private int calculateWinner(Card.Card cardP1, Card.Card cardP2)
-        {
 
-            return 0;
-        }
-
-        void adjustForElement(ref Card.Card cardP1, ref Card.Card cardP2)
+        private int CalculateWinner(Card.Card cardP1, Card.Card cardP2)
         {
-            cardP1.adjustDamageByElementType(cardP2.elementType);
-            cardP2.adjustDamageByElementType(cardP1.elementType);
+            if (cardP1.damage > cardP2.damage)
+            {
+                //Player 1 won the round -> return 0
+                return 0;
+            }
+            else if (cardP2.damage > cardP1.damage)
+            {
+                //Player 2 won the round -> return 1
+                return 1;
+            }
+            else
+            {
+                //draw -> return -1
+                return -1;
+            }
         }
     }
 }

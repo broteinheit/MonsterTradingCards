@@ -24,9 +24,14 @@ namespace MonsterTradingCards.Card
             this.cardType = cardType;
         }
 
-        public void adjustDamageByElementType(IElementType otherCardElementType)
+        public void AdjustDamageByElementType(IElementType otherCardElementType)
         {
             damage *= elementType.Compare(otherCardElementType);
+        }
+
+        public void ConsiderSpecialties(ICardType otherCardType, IElementType otherElementType)
+        {
+            damage *= cardType.ConsiderSpecialty(otherCardType, otherElementType);
         }
 
         public string cardId { get; protected set; }
