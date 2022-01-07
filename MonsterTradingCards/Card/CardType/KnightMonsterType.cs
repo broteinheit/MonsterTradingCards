@@ -13,7 +13,7 @@ namespace MonsterTradingCards.Card.CardType
         {
             switch (otherType)
             {
-                case SpellCard:
+                case SpellType:
                     if (elementType.GetType() == typeof(WaterElementType))
                     {
                         return 0;

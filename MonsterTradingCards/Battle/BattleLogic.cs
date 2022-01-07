@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MonsterTradingCards.Card;
+using MonsterTradingCards.Card.CardType;
 
 namespace MonsterTradingCards.Battle
 {
@@ -16,7 +17,7 @@ namespace MonsterTradingCards.Battle
             
             
             //Not Monster Fight -> consider Element
-            if (cardP1.GetType() != typeof(MonsterCard) || cardP2.GetType() != typeof(MonsterCard))
+            if (cardP1.cardType.GetType() == typeof(SpellType) || cardP2.cardType.GetType() == typeof(SpellType))
             {
                 adjustForElement(ref cardP1, ref cardP2);
             }

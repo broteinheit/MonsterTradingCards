@@ -9,7 +9,7 @@ namespace MonsterTradingCards.Card.CardType
 {
     internal class KrakenMonsterType : ICardType
     {
-        public int ConsiderSpecialty(IType otherMonsterType, IElementType elementType)
+        public int ConsiderSpecialty(ICardType otherCard, IElementType elementType)
         {
             return 1;
         }

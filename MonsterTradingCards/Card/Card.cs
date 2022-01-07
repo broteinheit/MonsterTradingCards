@@ -8,14 +8,14 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Card
 {
-    abstract class Card
+    class Card
     {
         public string GetCardName()
         {
             return elementType.GetTypeName() + cardType.GetTypeName();
         }
 
-        protected Card(string cardId, int playerId, double damage, IElementType elementType, ICardType cardType)
+        public Card(string cardId, int playerId, double damage, IElementType elementType, ICardType cardType)
         {
             this.cardId = cardId;
             this.playerId = playerId;
