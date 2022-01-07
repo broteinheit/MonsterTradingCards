@@ -114,15 +114,17 @@ namespace MonsterTradingCards.Battle
 
                 round++;
             }
-
+            battleState = BattleState.DONE;
 
             
             if (cardsP1.Count <= 0)         //if Player 1 has 0 cards -> player 2 wins
             {
+                //TODO adjust elo
                 return player2Id;
             }
             else if (cardsP2.Count <= 0)    //if Player 2 has 0 cards -> player 1 wins
             {
+                //TODO adjust elo
                 return player1Id;
             }
             else                            //draw
