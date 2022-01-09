@@ -5,12 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using MonsterTradingCards.Cards;
 using MonsterTradingCards.Cards.CardType;
+using MonsterTradingCards.Logger;
 
 namespace MonsterTradingCards.Battle
 {
     internal class BattleLogic
     {
-        //TODO: Logger
+        public BattleLogic(ref BattleLogStringBuilder logBuilder)
+        {
+            this.logBuilder = logBuilder;
+        }
 
         public BattleRoundResult RunRound(Card cardP1, Card cardP2)
         {
@@ -25,10 +29,18 @@ namespace MonsterTradingCards.Battle
                 cardP1.AdjustDamageByElementType(cardP2.elementType);
                 cardP2.AdjustDamageByElementType(cardP1.elementType);
             }
+            else
+            {
+                logBuilder.monsterFight = true;
+            }
+
+            logBuilder.finalDamageP1 = cardP1.damage;
+            logBuilder.finalDamageP2 = cardP2.damage;
 
             return CalculateWinner(cardP1, cardP2);
         }
 
+        //PlayerA: FireSpell (10 Damage) vs PlayerB: WaterSpell (20 Damage) => 10 VS 20 -> 05 VS 40 => WaterSpell wins
 
         private BattleRoundResult CalculateWinner(Card cardP1, Card cardP2)
         {
@@ -48,5 +60,7 @@ namespace MonsterTradingCards.Battle
                 return BattleRoundResult.DRAW;
             }
         }
+
+        private BattleLogStringBuilder logBuilder;
     }
 }

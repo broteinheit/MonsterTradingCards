@@ -29,7 +29,10 @@ public class Program
 
         battle.cardsP1 = deckP1;
         battle.cardsP2 = deckP2;
-        Console.WriteLine($"winner: {battle.StartBattle()}");
+        int winnerId = battle.StartBattle();
+        Console.WriteLine(battle.battleLogger.GetCompleteLog());
+        Console.WriteLine($"winner: {winnerId}");
+        Console.WriteLine($"total rounds: {battle.round}");
 
         return 0;
     }

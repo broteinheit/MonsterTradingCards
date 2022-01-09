@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MonsterTradingCards.Cards;
+using MonsterTradingCards.Logger;
 
 namespace MonsterTradingCards.Battle
 {
@@ -12,7 +13,9 @@ namespace MonsterTradingCards.Battle
         public BattleHandler()
         {
             battleState = BattleState.WAITING;
-            battleLogic = new BattleLogic();
+            battleLogger = new InMemoryLogger();
+            logBuilder = new BattleLogStringBuilder();
+            battleLogic = new BattleLogic(ref logBuilder);
         }
 
         public BattleHandler(int player1Id) : this()
@@ -32,19 +35,19 @@ namespace MonsterTradingCards.Battle
             {
                 return false;
             }
-            
-            
+
+
             if (player1Id == -1)        //if player 1 not set
             {
                 player1Id = playerId;
                 return true;
-            } 
+            }
             else if (player2Id == -1)   //if player 2 not set
             {
                 player2Id = playerId;
                 return true;
             }
-                
+
             return false;               //if both are already set
         }
 
@@ -79,6 +82,8 @@ namespace MonsterTradingCards.Battle
                 throw new Exception("To start a battle, two players need to be connected");
             }
 
+            logBuilder.player1Name = player1Id.ToString();  //TODO change to actaul name when user handling exists
+            logBuilder.player2Name = player2Id.ToString();  //TODO change to actual name when user handling exists
             battleState = BattleState.IN_PROGRESS;
             //TODO fetch decks from DB/Repository
 
@@ -88,6 +93,13 @@ namespace MonsterTradingCards.Battle
                 Card cardP1 = DrawCardFromDeck(cardsP1);
                 Card cardP2 = DrawCardFromDeck(cardsP2);
 
+
+                logBuilder.reset();
+                logBuilder.cardP1Name = cardP1.GetCardName();
+                logBuilder.cardP2Name = cardP2.GetCardName();
+                logBuilder.initialDamageP1 = cardP1.damage;
+                logBuilder.initialDamageP2 = cardP2.damage;
+
                 BattleRoundResult roundWinner = battleLogic.RunRound(cardP1.Clone(), cardP2.Clone());
 
                 switch (roundWinner)
@@ -96,16 +108,21 @@ namespace MonsterTradingCards.Battle
                     case BattleRoundResult.PLAYER1_WIN:
                         AddCardToDeck(cardsP1, cardP1);
                         AddCardToDeck(cardsP1, cardP2);
+                        logBuilder.winnerCardName = cardP1.GetCardName();
+                        logBuilder.loserCardName = cardP2.GetCardName();
                         break;
                     //Player 2 won the round -> both cards to player 2 deck
                     case BattleRoundResult.PLAYER2_WIN:
                         AddCardToDeck(cardsP2, cardP1);
                         AddCardToDeck(cardsP2, cardP2);
+                        logBuilder.winnerCardName = cardP2.GetCardName();
+                        logBuilder.loserCardName = cardP1.GetCardName();
                         break;
                     //draw -> both cards to their respective deck
                     case BattleRoundResult.DRAW:
                         AddCardToDeck(cardsP1, cardP1);
                         AddCardToDeck(cardsP2, cardP2);
+                        logBuilder.draw = true;
                         break;
                     default:
                         //throw error -> return value out of range
@@ -113,10 +130,11 @@ namespace MonsterTradingCards.Battle
                 }
 
                 round++;
+                battleLogger.AddRoundLog(logBuilder.GetLogString());
             }
             battleState = BattleState.DONE;
 
-            
+
             if (cardsP1.Count <= 0)         //if Player 1 has 0 cards -> player 2 wins
             {
                 //TODO adjust elo
@@ -128,7 +146,7 @@ namespace MonsterTradingCards.Battle
                 return player1Id;
             }
             else                            //draw
-            { 
+            {
                 return -1;
             }
         }
@@ -158,5 +176,7 @@ namespace MonsterTradingCards.Battle
         public BattleLogic battleLogic { get; private set; }
         public BattleState battleState { get; private set; }
         public int round { get; private set; } = 0;
+        public IBattleLogger battleLogger { get; private set; }
+        private BattleLogStringBuilder logBuilder;
     }
 }
