@@ -17,13 +17,13 @@ namespace MonsterTradingCards.Logger
                 return $"{player1Name}: {cardP1Name} ({initialDamageP1} Damage) vs " +
                     $"{player2Name}: {cardP2Name} ({initialDamageP2} Damage) => " +
                     $"{initialDamageP1} VS {initialDamageP2} -> {finalDamageP1} VS {finalDamageP2} " +
-                    $"=> {(draw ? "Draw (no action)" : (monsterFight ? $"{winnerCardName} defeats {loserCardName}" : $"{winnerCardName} wins" ))}\n";
+                    $"=> {(draw ? "Draw (no action)" : (monsterFight ? $"{winnerCardName} defeats {loserCardName}" : $"{winnerCardName} wins" ))}";
             } 
             else
             {
                 return $"{player1Name}: {cardP1Name} ({initialDamageP1} Damage) vs " +
                     $"{player2Name}: {cardP2Name} ({initialDamageP2} Damage) " +
-                    $"=> {(draw ? "Draw (no action)" : (monsterFight ? $"{winnerCardName} defeats {loserCardName}" : $"{winnerCardName} wins"))}\n";
+                    $"=> {(draw ? "Draw (no action)" : (monsterFight ? $"{winnerCardName} defeats {loserCardName}" : $"{winnerCardName} wins"))}";
             }
         }
 
