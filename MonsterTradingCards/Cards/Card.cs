@@ -24,6 +24,11 @@ namespace MonsterTradingCards.Cards
             this.cardType = cardType;
         }
 
+        public Card Clone()
+        {
+            return (Card)this.MemberwiseClone();
+        }
+
         public void AdjustDamageByElementType(IElementType otherCardElementType)
         {
             damage *= elementType.Compare(otherCardElementType);

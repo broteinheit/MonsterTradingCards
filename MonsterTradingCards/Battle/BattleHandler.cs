@@ -88,7 +88,7 @@ namespace MonsterTradingCards.Battle
                 Card cardP1 = DrawCardFromDeck(cardsP1);
                 Card cardP2 = DrawCardFromDeck(cardsP2);
 
-                BattleRoundResult roundWinner = battleLogic.RunRound(cardP1, cardP2);
+                BattleRoundResult roundWinner = battleLogic.RunRound(cardP1.Clone(), cardP2.Clone());
 
                 switch (roundWinner)
                 {
