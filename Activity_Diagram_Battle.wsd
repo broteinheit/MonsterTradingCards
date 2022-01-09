@@ -27,9 +27,9 @@ loop while both players have cards and round number < 100
 
     Server -> GameLogic: calculateRoundWinner
     
-    alt both Monster Cards
-        GameLogic -> GameLogic: compareSpecialties
-    else at least 1 Spell Card 
+    GameLogic -> GameLogic: compareSpecialties
+    
+    alt at least 1 Spell Card 
         GameLogic -> GameLogic: compareElementType
     end
 

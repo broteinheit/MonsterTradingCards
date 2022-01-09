@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCards.Card
+namespace MonsterTradingCards.Battle
 {
-    internal enum ElementType
+    internal enum BattleState
     {
-        WATER,
-        FIRE,
-        NORMAL
+        WAITING,
+        IN_PROGRESS,
+        DONE,
+        NONE
     }
 }
