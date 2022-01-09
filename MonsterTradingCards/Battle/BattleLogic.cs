@@ -12,7 +12,7 @@ namespace MonsterTradingCards.Battle
     {
         //TODO: Logger
 
-        public int RunRound(Card cardP1, Card cardP2)
+        public BattleRoundResult RunRound(Card cardP1, Card cardP2)
         {
             //Consider Specialties
             cardP1.ConsiderSpecialties(cardP2.cardType, cardP2.elementType);
@@ -30,22 +30,22 @@ namespace MonsterTradingCards.Battle
         }
 
 
-        private int CalculateWinner(Card cardP1, Card cardP2)
+        private BattleRoundResult CalculateWinner(Card cardP1, Card cardP2)
         {
             if (cardP1.damage > cardP2.damage)
             {
                 //Player 1 won the round -> return 0
-                return 0;
+                return BattleRoundResult.PLAYER1_WIN;
             }
             else if (cardP2.damage > cardP1.damage)
             {
                 //Player 2 won the round -> return 1
-                return 1;
+                return BattleRoundResult.PLAYER2_WIN;
             }
             else
             {
                 //draw -> return -1
-                return -1;
+                return BattleRoundResult.DRAW;
             }
         }
     }

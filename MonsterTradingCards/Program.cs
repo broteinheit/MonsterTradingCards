@@ -29,7 +29,7 @@ public class Program
 
         battle.cardsP1 = deckP1;
         battle.cardsP2 = deckP2;
-        battle.StartBattle();
+        Console.WriteLine($"winner: {battle.StartBattle()}");
 
         return 0;
     }

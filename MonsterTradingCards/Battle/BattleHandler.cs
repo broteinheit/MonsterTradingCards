@@ -88,22 +88,22 @@ namespace MonsterTradingCards.Battle
                 Card cardP1 = DrawCardFromDeck(cardsP1);
                 Card cardP2 = DrawCardFromDeck(cardsP2);
 
-                int roundWinner = battleLogic.RunRound(cardP1, cardP2);
+                BattleRoundResult roundWinner = battleLogic.RunRound(cardP1, cardP2);
 
                 switch (roundWinner)
                 {
                     //Player 1 won the round -> both cards to player 1 deck
-                    case 0:
+                    case BattleRoundResult.PLAYER1_WIN:
                         AddCardToDeck(cardsP1, cardP1);
                         AddCardToDeck(cardsP1, cardP2);
                         break;
                     //Player 2 won the round -> both cards to player 2 deck
-                    case 1:
+                    case BattleRoundResult.PLAYER2_WIN:
                         AddCardToDeck(cardsP2, cardP1);
                         AddCardToDeck(cardsP2, cardP2);
                         break;
                     //draw -> both cards to their respective deck
-                    case -1:
+                    case BattleRoundResult.DRAW:
                         AddCardToDeck(cardsP1, cardP1);
                         AddCardToDeck(cardsP2, cardP2);
                         break;
