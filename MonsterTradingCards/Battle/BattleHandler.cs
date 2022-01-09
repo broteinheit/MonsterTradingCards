@@ -93,13 +93,14 @@ namespace MonsterTradingCards.Battle
                 Card cardP1 = DrawCardFromDeck(cardsP1);
                 Card cardP2 = DrawCardFromDeck(cardsP2);
 
+
                 logBuilder.reset();
                 logBuilder.cardP1Name = cardP1.GetCardName();
                 logBuilder.cardP2Name = cardP2.GetCardName();
                 logBuilder.initialDamageP1 = cardP1.damage;
                 logBuilder.initialDamageP2 = cardP2.damage;
 
-                BattleRoundResult roundWinner = battleLogic.RunRound(cardP1, cardP2);
+                BattleRoundResult roundWinner = battleLogic.RunRound(cardP1.Clone(), cardP2.Clone());
 
                 switch (roundWinner)
                 {
