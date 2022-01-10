@@ -11,9 +11,9 @@ namespace MonsterTradingCardsServer.DAL
 {
     class DatabaseUserRepository : IUserRepository
     {
-        private const string CreateTableCommand = "CREATE TABLE IF NOT EXISTS users (username VARCHAR PRIMARY KEY, password VARCHAR, token VARCHAR, elo INTEGER)";
+        private const string CreateTableCommand = "CREATE TABLE IF NOT EXISTS users (username VARCHAR PRIMARY KEY, password VARCHAR, token VARCHAR, elo INTEGER, gold INTEGER)";
 
-        private const string InsertUserCommand = "INSERT INTO users(username, password, token, elo) VALUES (@username, @password, @token, @elo)";
+        private const string InsertUserCommand = "INSERT INTO users(username, password, token, elo, gold) VALUES (@username, @password, @token, @elo, @gold)";
         private const string SelectUserByTokenCommand = "SELECT username, password FROM users WHERE token=@token";
         private const string SelectUserByCredentialsCommand = "SELECT username, password FROM users WHERE username=@username AND password=@password";
 
@@ -70,6 +70,7 @@ namespace MonsterTradingCardsServer.DAL
                 cmd.Parameters.AddWithValue("password", user.Password);
                 cmd.Parameters.AddWithValue("token", user.Token);
                 cmd.Parameters.AddWithValue("elo", user.Elo);
+                cmd.Parameters.AddWithValue("gold", user.Gold);
                 affectedRows = cmd.ExecuteNonQuery();
             }
             catch (PostgresException)

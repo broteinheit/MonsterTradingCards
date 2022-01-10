@@ -11,11 +11,11 @@ namespace MonsterTradingCardsServer.RouteCommands.Users
 {
     class LoginCommand : IRouteCommand
     {
-        private readonly IMessageManager messageManager;
+        private readonly IUserManager messageManager;
 
         public Credentials Credentials { get; private set; }
 
-        public LoginCommand(IMessageManager messageManager, Credentials credentials)
+        public LoginCommand(IUserManager messageManager, Credentials credentials)
         {
             Credentials = credentials;
             this.messageManager = messageManager;

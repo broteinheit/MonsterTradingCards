@@ -11,7 +11,6 @@ namespace MonsterTradingCardsServer.DAL
     {
         private readonly NpgsqlConnection _connection;
 
-        public IMessageRepository MessageRepository { get; private set; }
         public IUserRepository UserRepository { get; private set; }
 
         public Database(string connectionString)
@@ -24,7 +23,6 @@ namespace MonsterTradingCardsServer.DAL
                 // first users, then messages
                 // we need this special order since messages has a foreign key to users
                 UserRepository = new DatabaseUserRepository(_connection);
-                MessageRepository = new DatabaseMessageRepository(_connection);
             }
             catch (NpgsqlException e)
             {
