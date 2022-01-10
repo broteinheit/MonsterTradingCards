@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>net5.0</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,7 +11,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SWE1HttpServer.Core\SWE1HttpServer.Core.csproj" />
+    <ProjectReference Include="..\MonsterTradingCardsServer.Core\MonsterTradingCardsServer.Core.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="RouteCommands\Packages\" />
   </ItemGroup>
 
 </Project>

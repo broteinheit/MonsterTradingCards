@@ -21,7 +21,7 @@ namespace SWE1HttpServer
             // use the DB connection instead
             // better: fetch the connection string from a config file -> see next semester ;)
             // we use an extra Database class to coordinate the creation of the repositories and manage the DB connection
-            var db = new Database("Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=swe1messagedb");
+            var db = new Database("Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=monster_trading_cards");
 
             var messageManager = new MessageManager(db.MessageRepository, db.UserRepository);
 
