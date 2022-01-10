@@ -13,5 +13,7 @@ namespace MonsterTradingCardsServer.Models
         public string Password { get; set; }
 
         public string Token => $"{Username}-mtcgToken";
+
+        public int Elo { get; set; }
     }
 }

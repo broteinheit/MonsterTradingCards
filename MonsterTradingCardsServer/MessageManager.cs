@@ -30,7 +30,8 @@ namespace MonsterTradingCardsServer
             var user = new User()
             {
                 Username = credentials.Username,
-                Password = credentials.Password
+                Password = credentials.Password,
+                Elo = 100
             };
             if (userRepository.InsertUser(user) == false)
             {
