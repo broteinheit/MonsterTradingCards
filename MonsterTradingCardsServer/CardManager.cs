@@ -42,5 +42,14 @@ namespace MonsterTradingCards.Server
         {
             throw new NotImplementedException();
         }
+
+        public void ChangeOwner(Card card, string newOwner)
+        {
+            card.OwnerUsername = newOwner;
+            if (!cardRepository.ChangeCardOwner(card))
+            {
+                throw new Exception($"Owner could not be changed (id: {card.Id}, newOwner: {card.OwnerUsername})");
+            }
+        }
     }
 }

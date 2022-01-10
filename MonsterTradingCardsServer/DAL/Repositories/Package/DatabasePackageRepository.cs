@@ -1,4 +1,5 @@
-﻿using Npgsql;
+﻿using MonsterTradingCards.Server.Models;
+using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,9 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Package
 
         private const string InsertPackageCommand = "INSERT INTO packages(cardOneId, cardTwoId, cardThreeId, cardFourId, cardFiveId) " +
             "VALUES (@cardOneId, @cardTwoId, @cardThreeId, @cardFourId, @cardFiveId)";
-        private const string SelectPackageByIdCommand = "SELECT pkgId, cardOneId, cardTwoId, cardThreeId, cardFourId FROM packages WHERE pkgId=@pkgId";
+        private const string SelectPackageByIndex = "SELECT cardOneId, cardTwoId, cardThreeId, cardFourId, cardFiveId FROM packages LIMIT 1 OFFSET @offset;";
+        private const string SelectPackageCountCommand = "SELECT count(*) FROM packages";
+        private const string DeletePackage = "DELETE FROM packages WHERE cardOneId=@cardOneId AND cardTwoId=@cardTwoId AND cardThreeId=@cardThreeId AND cardFourId=@cardFourId AND cardFiveId=@cardFiveId";
 
         private readonly NpgsqlConnection _connection;
 
@@ -28,9 +31,42 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Package
             EnsureTables();
         }
 
-        public Models.Package acquirePackage(string packageId)
+        public List<string> AcquireRandomPackage()
         {
-            throw new NotImplementedException();
+            var random = new Random();
+            int randomPackIdx = random.Next(0, GetPackageCount()-1);
+            string[] cardIds = new string[5];
+
+            try
+            {
+                //get Package
+                var cmd = new NpgsqlCommand(SelectPackageByIndex, _connection);
+                cmd.Parameters.AddWithValue("offset", randomPackIdx);
+
+                var res = cmd.ExecuteReader();
+                res.Read();
+                res.GetValues(cardIds);
+                res.Close();
+
+                //delete Package
+                cmd = new NpgsqlCommand(DeletePackage, _connection);
+                cmd.Parameters.AddWithValue("cardOneId", cardIds[0]);
+                cmd.Parameters.AddWithValue("cardTwoId", cardIds[1]);
+                cmd.Parameters.AddWithValue("cardThreeId", cardIds[2]);
+                cmd.Parameters.AddWithValue("cardFourId", cardIds[3]);
+                cmd.Parameters.AddWithValue("cardFiveId", cardIds[4]);
+                if (cmd.ExecuteNonQuery() == 0)
+                {
+                    throw new Exception("Package could not be deleted");
+                }
+            }
+            catch (PostgresException)
+            {
+                // this might happen, if the user already exists (constraint violation)
+                // we just catch it an keep affectedRows at zero
+            }
+
+            return cardIds.ToList<string>();
         }
 
         public bool CreatePackage(Models.Package package)
@@ -59,6 +95,11 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Package
         {
             using var cmd = new NpgsqlCommand(CreateTableCommand, _connection);
             cmd.ExecuteNonQuery();
+        }
+
+        private int GetPackageCount()
+        {
+            return Convert.ToInt32(new NpgsqlCommand(SelectPackageCountCommand, _connection).ExecuteScalar());
         }
     }
 }

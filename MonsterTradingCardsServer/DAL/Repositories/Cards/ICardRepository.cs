@@ -10,7 +10,8 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Cards
     public interface ICardRepository
     {
         bool InsertCard(Card card);
-        Card GetCardById(Card cardID);
+        Card GetCardById(string cardId);
         List<Card> GetAllUserCards(string Username);
+        bool ChangeCardOwner(Card card);
     }
 }

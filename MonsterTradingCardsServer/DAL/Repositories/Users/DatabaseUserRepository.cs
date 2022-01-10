@@ -14,8 +14,9 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
         private const string CreateTableCommand = "CREATE TABLE IF NOT EXISTS users (username VARCHAR PRIMARY KEY, password VARCHAR, token VARCHAR, elo INTEGER, gold INTEGER)";
 
         private const string InsertUserCommand = "INSERT INTO users(username, password, token, elo, gold) VALUES (@username, @password, @token, @elo, @gold)";
-        private const string SelectUserByTokenCommand = "SELECT username, password FROM users WHERE token=@token";
-        private const string SelectUserByCredentialsCommand = "SELECT username, password FROM users WHERE username=@username AND password=@password";
+        private const string SelectUserByTokenCommand = "SELECT username, password, elo, gold FROM users WHERE token=@token";
+        private const string SelectUserByCredentialsCommand = "SELECT username, password, elo, gold FROM users WHERE username=@username AND password=@password";
+        private const string UpdateUserGoldCommand = "UPDATE users SET gold = gold + @amount WHERE username = @username";
 
         private readonly NpgsqlConnection _connection;
 
@@ -81,6 +82,24 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
             return affectedRows > 0;
         }
 
+        public bool AdjustUserGold(string username, int gold)
+        {
+            var affectedRows = 0;
+            try
+            {
+                using var cmd = new NpgsqlCommand(UpdateUserGoldCommand, _connection);
+                cmd.Parameters.AddWithValue("username", username);
+                cmd.Parameters.AddWithValue("amount", gold);
+                affectedRows = cmd.ExecuteNonQuery();
+            }
+            catch (PostgresException)
+            {
+                // this might happen, if the user already exists (constraint violation)
+                // we just catch it an keep affectedRows at zero
+            }
+            return affectedRows > 0;
+        }
+
         private void EnsureTables()
         {
             using var cmd = new NpgsqlCommand(CreateTableCommand, _connection);
@@ -92,7 +111,9 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
             var user = new User
             {
                 Username = Convert.ToString(record["username"]),
-                Password = Convert.ToString(record["password"])
+                Password = Convert.ToString(record["password"]),
+                Elo = Convert.ToInt32(record["elo"]),
+                Gold = Convert.ToInt32(record["gold"])
             };
             return user;
         }

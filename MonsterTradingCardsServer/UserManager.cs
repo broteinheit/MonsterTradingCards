@@ -23,6 +23,14 @@ namespace MonsterTradingCards.Server
             return user ?? throw new UserNotFoundException();
         }
 
+        public void AdjustGoldForUser(User user, int amount)
+        {
+            if (!userRepository.AdjustUserGold(user.Username, amount)) 
+            {
+                throw new Exception("Could not reduce gold");
+            }
+        }
+
         public void RegisterUser(Credentials credentials)
         {
             var user = new User()

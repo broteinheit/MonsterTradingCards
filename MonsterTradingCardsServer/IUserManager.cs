@@ -7,5 +7,6 @@ namespace MonsterTradingCards.Server
     {
         User LoginUser(Credentials credentials);
         void RegisterUser(Credentials credentials);
+        void AdjustGoldForUser(User user, int amount);
     }
 }

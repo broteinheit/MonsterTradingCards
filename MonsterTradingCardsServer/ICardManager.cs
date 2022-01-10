@@ -12,5 +12,6 @@ namespace MonsterTradingCards.Server
         void AddCard(Card card);
         Card GetCard(string cardId);
         List<Card> GetAllCards(string username);
+        void ChangeOwner(Card card, string newOwner);
     }
 }
