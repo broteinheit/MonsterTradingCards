@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer.Core.Response
+namespace MonsterTradingCards.Server.Core.Response
 {
     public class Response
     {

@@ -1,12 +1,12 @@
-﻿using MonsterTradingCardsServer.Core.Authentication;
-using MonsterTradingCardsServer.Core.Request;
+﻿using MonsterTradingCards.Server.Core.Authentication;
+using MonsterTradingCards.Server.Core.Request;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer.Core.Routing
+namespace MonsterTradingCards.Server.Core.Routing
 {
     public class Router : IRouter
     {

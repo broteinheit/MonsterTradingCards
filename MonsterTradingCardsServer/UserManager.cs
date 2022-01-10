@@ -1,12 +1,12 @@
-﻿using MonsterTradingCardsServer.DAL;
-using MonsterTradingCardsServer.Models;
+﻿using MonsterTradingCards.Server.DAL.Repositories.Users;
+using MonsterTradingCards.Server.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer
+namespace MonsterTradingCards.Server
 {
     public class UserManager : IUserManager
     {

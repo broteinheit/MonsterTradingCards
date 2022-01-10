@@ -18,7 +18,6 @@ namespace MonsterTradingCards.Cards
         public Card(string cardId, int playerId, double damage, IElementType elementType, ICardType cardType)
         {
             this.cardId = cardId;
-            this.playerId = playerId;
             this.damage = damage;
             this.elementType = elementType;
             this.cardType = cardType;
@@ -40,7 +39,6 @@ namespace MonsterTradingCards.Cards
         }
 
         public string cardId { get; protected set; }
-        public int playerId { get; protected set; }
         public IElementType elementType { get; protected set; }
         public ICardType cardType { get; protected set; }
         public double damage { get; protected set; }

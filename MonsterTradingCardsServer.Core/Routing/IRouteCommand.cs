@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer.Core.Routing
+namespace MonsterTradingCards.Server.Core.Routing
 {
     public interface IRouteCommand
     {

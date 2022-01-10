@@ -1,5 +1,5 @@
-﻿using MonsterTradingCardsServer.Core.Request;
-using MonsterTradingCardsServer.Core.Routing;
+﻿using MonsterTradingCards.Server.Core.Request;
+using MonsterTradingCards.Server.Core.Routing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer
+namespace MonsterTradingCards.Server
 {
     class IdRouteParser : IRouteParser
     {

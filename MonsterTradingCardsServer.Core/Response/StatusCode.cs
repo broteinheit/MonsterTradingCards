@@ -1,4 +1,4 @@
-﻿namespace MonsterTradingCardsServer.Core.Response
+﻿namespace MonsterTradingCards.Server.Core.Response
 {
     public enum StatusCode
     {

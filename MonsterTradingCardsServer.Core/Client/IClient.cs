@@ -1,11 +1,11 @@
-﻿using MonsterTradingCardsServer.Core.Request;
+﻿using MonsterTradingCards.Server.Core.Request;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer.Core.Client
+namespace MonsterTradingCards.Server.Core.Client
 {
     public interface IClient
     {

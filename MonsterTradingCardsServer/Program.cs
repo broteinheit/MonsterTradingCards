@@ -1,21 +1,22 @@
 ﻿using System;
 using System.Net;
-using MonsterTradingCardsServer.RouteCommands.Cards;
-using MonsterTradingCardsServer.RouteCommands.Deck;
-using MonsterTradingCardsServer.RouteCommands.Packages;
-using MonsterTradingCardsServer.RouteCommands.Users;
+using MonsterTradingCards.Server.RouteCommands.Cards;
+using MonsterTradingCards.Server.RouteCommands.Deck;
+using MonsterTradingCards.Server.RouteCommands.Packages;
+using MonsterTradingCards.Server.RouteCommands.Users;
 using Newtonsoft.Json;
-using MonsterTradingCardsServer.Core.Request;
-using MonsterTradingCardsServer.Core.Routing;
-using MonsterTradingCardsServer.Core.Server;
-using MonsterTradingCardsServer.DAL;
-using MonsterTradingCardsServer.Models;
-using MonsterTradingCardsServer.RouteCommands.Stats;
-using MonsterTradingCardsServer.RouteCommands.Scoreboard;
-using MonsterTradingCardsServer.RouteCommands.Battles;
-using MonsterTradingCardsServer.RouteCommands.Tradings;
+using MonsterTradingCards.Server.Core.Request;
+using MonsterTradingCards.Server.Core.Routing;
+using MonsterTradingCards.Server.Core.Server;
+using MonsterTradingCards.Server.DAL;
+using MonsterTradingCards.Server.Models;
+using MonsterTradingCards.Server.RouteCommands.Stats;
+using MonsterTradingCards.Server.RouteCommands.Scoreboard;
+using MonsterTradingCards.Server.RouteCommands.Battles;
+using MonsterTradingCards.Server.RouteCommands.Tradings;
+using System.Collections.Generic;
 
-namespace MonsterTradingCardsServer
+namespace MonsterTradingCards.Server
 {
     class Program
     {
@@ -30,22 +31,24 @@ namespace MonsterTradingCardsServer
             var db = new Database("Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=monster_trading_cards");
 
             var userManager = new UserManager(db.UserRepository);
+            var cardManager = new CardManager(db.CardRepository);
+            var packageManager = new PackageManager(db.PackageRepository);
 
-            var identityProvider = new MessageIdentityProvider(db.UserRepository);
+            var identityProvider = new UserIdentityProvider(db.UserRepository);
             var routeParser = new IdRouteParser();
 
             var router = new Router(routeParser, identityProvider);
-            RegisterRoutes(router, userManager);
+            RegisterRoutes(router, userManager, cardManager, packageManager);
 
             var httpServer = new HttpServer(IPAddress.Any, 10001, router);
             httpServer.Start();
         }
 
-        private static void RegisterRoutes(Router router, IUserManager messageManager)
+        private static void RegisterRoutes(Router router, IUserManager userManager, ICardManager cardManager, IPackageManager packageManager)
         {
             // public routes
-            router.AddRoute(HttpMethod.Post, "/sessions", (r, p) => new LoginCommand(messageManager, Deserialize<Credentials>(r.Payload)));
-            router.AddRoute(HttpMethod.Post, "/users", (r, p) => new RegisterCommand(messageManager, Deserialize<Credentials>(r.Payload)));
+            router.AddRoute(HttpMethod.Post, "/sessions", (r, p) => new LoginCommand(userManager, Deserialize<Credentials>(r.Payload)));
+            router.AddRoute(HttpMethod.Post, "/users", (r, p) => new RegisterCommand(userManager, Deserialize<Credentials>(r.Payload)));
 
             // protected routes
             /*
@@ -56,7 +59,8 @@ namespace MonsterTradingCardsServer
             router.AddProtectedRoute(HttpMethod.Delete, "/messages/{id}", (r, p) => new RemoveMessageCommand(messageManager, int.Parse(p["id"])));
             */
 
-            router.AddProtectedRoute(HttpMethod.Post, "/packages", (r, p) => new CreatePackageCommand());
+            router.AddProtectedRoute(HttpMethod.Post, "/packages", (r, p) => new CreatePackageCommand(cardManager, packageManager, 
+                new Package() { Cards=Deserialize<List<Card>>(r.Payload) }));
             router.AddProtectedRoute(HttpMethod.Post, "/transactions/packages", (r, p) => new AcquirePackageCommand());
 
             router.AddProtectedRoute(HttpMethod.Get, "/cards", (r, p) => new ShowCardsCommand());

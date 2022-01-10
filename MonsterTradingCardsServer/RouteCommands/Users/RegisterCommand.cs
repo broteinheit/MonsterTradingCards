@@ -1,23 +1,23 @@
-﻿using MonsterTradingCardsServer.Core.Response;
-using MonsterTradingCardsServer.Core.Routing;
-using MonsterTradingCardsServer.Models;
+﻿using MonsterTradingCards.Server.Core.Response;
+using MonsterTradingCards.Server.Core.Routing;
+using MonsterTradingCards.Server.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer.RouteCommands.Users
+namespace MonsterTradingCards.Server.RouteCommands.Users
 {
     class RegisterCommand : IRouteCommand
     {
-        private readonly IUserManager messageManager;
+        private readonly IUserManager userManager;
         public Credentials Credentials { get; private set; }
 
         public RegisterCommand(IUserManager messageManager, Credentials credentials)
         {
             Credentials = credentials;
-            this.messageManager = messageManager;
+            this.userManager = messageManager;
         }
 
         public Response Execute()
@@ -25,7 +25,7 @@ namespace MonsterTradingCardsServer.RouteCommands.Users
             var response = new Response();
             try
             {
-                messageManager.RegisterUser(Credentials);
+                userManager.RegisterUser(Credentials);
                 response.StatusCode = StatusCode.Created;
             }
             catch (DuplicateUserException)

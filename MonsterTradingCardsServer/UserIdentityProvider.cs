@@ -1,20 +1,21 @@
-﻿using MonsterTradingCardsServer.Core.Authentication;
-using MonsterTradingCardsServer.Core.Request;
-using MonsterTradingCardsServer.DAL;
-using MonsterTradingCardsServer.Models;
+﻿using MonsterTradingCards.Server.Core.Authentication;
+using MonsterTradingCards.Server.Core.Request;
+using MonsterTradingCards.Server.DAL;
+using MonsterTradingCards.Server.DAL.Repositories.Users;
+using MonsterTradingCards.Server.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer
+namespace MonsterTradingCards.Server
 {
-    class MessageIdentityProvider : IIdentityProvider
+    class UserIdentityProvider : IIdentityProvider
     {
         private readonly IUserRepository userRepository;
 
-        public MessageIdentityProvider(IUserRepository userRepository)
+        public UserIdentityProvider(IUserRepository userRepository)
         {
             this.userRepository = userRepository;
         }

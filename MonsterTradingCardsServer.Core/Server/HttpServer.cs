@@ -1,6 +1,6 @@
-﻿using MonsterTradingCardsServer.Core.Client;
-using MonsterTradingCardsServer.Core.Listener;
-using MonsterTradingCardsServer.Core.Routing;
+﻿using MonsterTradingCards.Server.Core.Client;
+using MonsterTradingCards.Server.Core.Listener;
+using MonsterTradingCards.Server.Core.Routing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer.Core.Server
+namespace MonsterTradingCards.Server.Core.Server
 {
     public class HttpServer : IServer
     {

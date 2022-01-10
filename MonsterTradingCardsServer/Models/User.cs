@@ -1,11 +1,11 @@
-﻿using MonsterTradingCardsServer.Core.Authentication;
+﻿using MonsterTradingCards.Server.Core.Authentication;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer.Models
+namespace MonsterTradingCards.Server.Models
 {
     public class User : IIdentity
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace MonsterTradingCardsServer
+namespace MonsterTradingCards.Server
 {
     internal class DuplicateUserException : Exception
     {

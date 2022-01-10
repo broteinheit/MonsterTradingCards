@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCards.Server.Core.Authentication
+namespace MonsterTradingCards.Server.Models
 {
-    public interface IIdentity
+    public class Package
     {
+        public List<Card> Cards { get; set; }
     }
 }

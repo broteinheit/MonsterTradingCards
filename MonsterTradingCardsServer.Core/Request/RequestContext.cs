@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer.Core.Request
+namespace MonsterTradingCards.Server.Core.Request
 {
     public class RequestContext
     {

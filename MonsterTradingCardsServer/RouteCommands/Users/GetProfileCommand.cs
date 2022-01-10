@@ -1,12 +1,12 @@
-﻿using MonsterTradingCardsServer.Core.Response;
-using MonsterTradingCardsServer.RouteCommands;
+﻿using MonsterTradingCards.Server.Core.Response;
+using MonsterTradingCards.Server.RouteCommands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer.RouteCommands.Users
+namespace MonsterTradingCards.Server.RouteCommands.Users
 {
     internal class GetProfileCommand : ProtectedRouteCommand
     {

@@ -5,9 +5,9 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonsterTradingCards", "MonsterTradingCards\MonsterTradingCards.csproj", "{98F42F1B-8562-4D5E-97D0-7967B3874C94}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonsterTradingCardsServer", "MonsterTradingCardsServer\MonsterTradingCardsServer.csproj", "{A2D4521A-FEEF-4CE7-AC58-1AF7C8E3444F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonsterTradingCards.Server", "MonsterTradingCardsServer\MonsterTradingCards.Server.csproj", "{A2D4521A-FEEF-4CE7-AC58-1AF7C8E3444F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonsterTradingCardsServer.Core", "MonsterTradingCardsServer.Core\MonsterTradingCardsServer.Core.csproj", "{5EAB8F05-664D-49A4-9B8B-17BA140633E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonsterTradingCards.Server.Core", "MonsterTradingCardsServer.Core\MonsterTradingCards.Server.Core.csproj", "{5EAB8F05-664D-49A4-9B8B-17BA140633E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

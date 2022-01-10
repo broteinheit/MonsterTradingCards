@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer.Models
+namespace MonsterTradingCards.Server.Models
 {
     public class Credentials
     {

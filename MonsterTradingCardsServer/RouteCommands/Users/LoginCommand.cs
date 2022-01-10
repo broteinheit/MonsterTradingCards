@@ -1,13 +1,13 @@
-﻿using MonsterTradingCardsServer.Core.Response;
-using MonsterTradingCardsServer.Core.Routing;
-using MonsterTradingCardsServer.Models;
+﻿using MonsterTradingCards.Server.Core.Response;
+using MonsterTradingCards.Server.Core.Routing;
+using MonsterTradingCards.Server.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer.RouteCommands.Users
+namespace MonsterTradingCards.Server.RouteCommands.Users
 {
     class LoginCommand : IRouteCommand
     {

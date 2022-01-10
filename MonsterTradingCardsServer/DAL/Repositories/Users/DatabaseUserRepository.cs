@@ -1,5 +1,5 @@
 ﻿using Npgsql;
-using MonsterTradingCardsServer.Models;
+using MonsterTradingCards.Server.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer.DAL
+namespace MonsterTradingCards.Server.DAL.Repositories.Users
 {
     class DatabaseUserRepository : IUserRepository
     {

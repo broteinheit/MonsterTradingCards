@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace MonsterTradingCardsServer.DAL
+namespace MonsterTradingCards.Server.DAL
 {
     class DataAccessFailedException : Exception
     {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer.Core.Server
+namespace MonsterTradingCards.Server.Core.Server
 {
     public interface IServer
     {

@@ -1,4 +1,4 @@
-﻿using MonsterTradingCardsServer.Core.Request;
+﻿using MonsterTradingCards.Server.Core.Request;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCardsServer.Core.Client
+namespace MonsterTradingCards.Server.Core.Client
 {
     class HttpClient : IClient
     {
