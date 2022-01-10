@@ -1,14 +1,14 @@
-﻿using SWE1HttpServer.Core.Authentication;
-using SWE1HttpServer.Core.Request;
-using SWE1HttpServer.DAL;
-using SWE1HttpServer.Models;
+﻿using MonsterTradingCardsServer.Core.Authentication;
+using MonsterTradingCardsServer.Core.Request;
+using MonsterTradingCardsServer.DAL;
+using MonsterTradingCardsServer.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWE1HttpServer
+namespace MonsterTradingCardsServer
 {
     class MessageIdentityProvider : IIdentityProvider
     {

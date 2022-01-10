@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWE1HttpServer.Core.Request
+namespace MonsterTradingCardsServer.Core.Request
 {
     public enum HttpMethod
     {

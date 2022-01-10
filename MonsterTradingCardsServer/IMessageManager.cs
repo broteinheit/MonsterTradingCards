@@ -1,7 +1,7 @@
-﻿using SWE1HttpServer.Models;
+﻿using MonsterTradingCardsServer.Models;
 using System.Collections.Generic;
 
-namespace SWE1HttpServer
+namespace MonsterTradingCardsServer
 {
     public interface IMessageManager
     {

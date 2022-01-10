@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace SWE1HttpServer
+namespace MonsterTradingCardsServer
 {
     [Serializable]
     internal class UserNotFoundException : Exception

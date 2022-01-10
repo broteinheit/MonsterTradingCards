@@ -1,11 +1,11 @@
-﻿using SWE1HttpServer.Core.Response;
+﻿using MonsterTradingCardsServer.Core.Response;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWE1HttpServer.RouteCommands.Messages
+namespace MonsterTradingCardsServer.RouteCommands.Messages
 {
     class UpdateMessageCommand : ProtectedRouteCommand
     {

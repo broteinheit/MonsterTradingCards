@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWE1HttpServer.Core.Routing
+namespace MonsterTradingCardsServer.Core.Routing
 {
     class RouteNotAuthorizedException : Exception
     {

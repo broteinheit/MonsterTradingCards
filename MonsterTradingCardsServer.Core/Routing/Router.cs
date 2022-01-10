@@ -1,12 +1,12 @@
-﻿using SWE1HttpServer.Core.Authentication;
-using SWE1HttpServer.Core.Request;
+﻿using MonsterTradingCardsServer.Core.Authentication;
+using MonsterTradingCardsServer.Core.Request;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWE1HttpServer.Core.Routing
+namespace MonsterTradingCardsServer.Core.Routing
 {
     public class Router : IRouter
     {

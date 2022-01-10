@@ -1,5 +1,5 @@
-﻿using SWE1HttpServer.Core.Request;
-using SWE1HttpServer.Core.Routing;
+﻿using MonsterTradingCardsServer.Core.Request;
+using MonsterTradingCardsServer.Core.Routing;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace SWE1HttpServer
+namespace MonsterTradingCardsServer
 {
     class IdRouteParser : IRouteParser
     {

@@ -1,4 +1,4 @@
-﻿using SWE1HttpServer.Core.Request;
+﻿using MonsterTradingCardsServer.Core.Request;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,7 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWE1HttpServer.Core.Client
+namespace MonsterTradingCardsServer.Core.Client
 {
     class HttpClient : IClient
     {

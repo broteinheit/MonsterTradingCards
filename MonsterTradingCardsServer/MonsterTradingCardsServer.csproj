@@ -14,8 +14,4 @@
     <ProjectReference Include="..\MonsterTradingCardsServer.Core\MonsterTradingCardsServer.Core.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="RouteCommands\Packages\" />
-  </ItemGroup>
-
 </Project>

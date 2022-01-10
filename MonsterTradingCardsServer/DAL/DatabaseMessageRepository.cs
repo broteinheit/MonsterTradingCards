@@ -1,5 +1,5 @@
 ﻿using Npgsql;
-using SWE1HttpServer.Models;
+using MonsterTradingCardsServer.Models;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SWE1HttpServer.DAL
+namespace MonsterTradingCardsServer.DAL
 {
     class DatabaseMessageRepository : IMessageRepository
     {
