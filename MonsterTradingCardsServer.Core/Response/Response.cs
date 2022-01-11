@@ -10,5 +10,6 @@ namespace MonsterTradingCards.Server.Core.Response
     {
         public StatusCode StatusCode { get; set; }
         public string Payload { get; set; }
+        public string ContentType { get; set; } = "text/html";
     }
 }

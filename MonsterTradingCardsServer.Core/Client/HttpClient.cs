@@ -109,7 +109,8 @@ namespace MonsterTradingCards.Server.Core.Client
         {
             var writer = new StreamWriter(connection.GetStream()) { AutoFlush = true };
             writer.Write($"HTTP/1.1 {(int)response.StatusCode} {response.StatusCode}\r\n");
-            
+            writer.Write($"Content-Type: {response.ContentType}\r\n");
+
             if (!string.IsNullOrEmpty(response.Payload))
             {
                 var payload = Encoding.UTF8.GetBytes(response.Payload);

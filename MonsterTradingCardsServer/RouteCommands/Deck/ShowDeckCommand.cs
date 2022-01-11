@@ -13,10 +13,12 @@ namespace MonsterTradingCards.Server.RouteCommands.Deck
     internal class ShowDeckCommand : ProtectedRouteCommand
     {
         private readonly IDeckManager deckManager;
+        private readonly string format;
 
-        public ShowDeckCommand(IDeckManager deckManager)
+        public ShowDeckCommand(IDeckManager deckManager, string format="json")
         {
             this.deckManager = deckManager;
+            this.format = format;
         }
 
         public override Response Execute()
@@ -27,6 +29,17 @@ namespace MonsterTradingCards.Server.RouteCommands.Deck
                 Models.Deck deck = deckManager.GetDeckByUsername(User.Username);
                 response.StatusCode = StatusCode.Ok;
                 response.Payload = JsonConvert.SerializeObject(deck.cardIds);
+                switch (format)
+                {
+                    case "json":
+                        response.ContentType = "application/json";
+                        break;
+                    case "plain":
+                        response.ContentType = "text/plain";
+                        break;
+                    default:
+                        throw new Exception($"format {format} is not supported");
+                }
             }
             catch (Exception e)
             {
