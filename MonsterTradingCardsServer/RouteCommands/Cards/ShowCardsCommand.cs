@@ -10,9 +10,28 @@ namespace MonsterTradingCards.Server.RouteCommands.Cards
 {
     internal class ShowCardsCommand : ProtectedRouteCommand
     {
+        private readonly ICardManager cardManager;
+
+        public ShowCardsCommand(ICardManager cardManager)
+        {
+            this.cardManager = cardManager;
+        }
+
         public override Response Execute()
         {
-            throw new NotImplementedException();
+            var response = new Response();
+            try
+            {
+                response.Payload = cardManager.GetAllCardsJSON(User.Username);
+                response.StatusCode = StatusCode.Ok;
+            }
+            catch (Exception e)
+            {
+                response.StatusCode = StatusCode.Conflict;
+                response.Payload = e.Message;
+            }
+
+            return response;
         }
     }
 }

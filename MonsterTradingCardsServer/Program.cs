@@ -51,7 +51,7 @@ namespace MonsterTradingCards.Server
                 new Package() { Cards=Deserialize<List<Card>>(r.Payload) }));
             router.AddProtectedRoute(HttpMethod.Post, "/transactions/packages", (r, p) => new AcquirePackageCommand(cardManager, packageManager, userManager));
 
-            router.AddProtectedRoute(HttpMethod.Get, "/cards", (r, p) => new ShowCardsCommand());
+            router.AddProtectedRoute(HttpMethod.Get, "/cards", (r, p) => new ShowCardsCommand(cardManager));
 
             router.AddProtectedRoute(HttpMethod.Get, "/deck", (r, p) => new ShowDeckCommand());
             router.AddProtectedRoute(HttpMethod.Put, "/deck", (r, p) => new ConfigureDeckCommand());

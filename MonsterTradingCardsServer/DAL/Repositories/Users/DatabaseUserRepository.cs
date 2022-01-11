@@ -39,6 +39,7 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
                 {
                     user = ReadUser(reader);
                 }
+                reader.Close();
             }
             return user;
         }

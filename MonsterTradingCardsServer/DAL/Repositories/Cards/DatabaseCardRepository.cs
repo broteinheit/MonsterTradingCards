@@ -15,7 +15,7 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Cards
 
         private const string InsertCardCommand = "INSERT INTO cards(cardId, cardName, damage, owner) VALUES (@cardId, @cardName, @damage, @owner)";
         private const string SelectCardById = "SELECT cardId, cardName, damage, owner FROM cards WHERE cardId=@cardId";
-        private const string SelectAllUserCards = "SELECT cardId, cardName, damage, owner FROM users WHERE owner=@username";
+        private const string SelectAllUserCards = "SELECT cardId, cardName, damage, owner FROM cards WHERE owner=@username";
         private const string UpdateCardCommand = "UPDATE cards SET owner=@newOwner WHERE cardId = @cardId";
 
         private readonly NpgsqlConnection _connection;
@@ -34,7 +34,23 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Cards
 
         public List<Card> GetAllUserCards(string Username)
         {
-            throw new NotImplementedException();
+            List<Card> result = new List<Card>();
+            var cmd = new NpgsqlCommand(SelectAllUserCards, _connection);
+            cmd.Parameters.AddWithValue("username", Username);
+            var reader = cmd.ExecuteReader();
+
+            while (reader.Read())
+            {
+                result.Add(new Card() 
+                { 
+                    Id = reader.GetString(0),
+                    Name = reader.GetString(1),
+                    Damage = reader.GetDouble(2),
+                    OwnerUsername = reader.GetString(3),
+                });
+            }
+            reader.Close();
+            return result;
         }
 
         public Card GetCardById(string cardId)

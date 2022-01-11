@@ -1,5 +1,6 @@
 ﻿using MonsterTradingCards.Server.DAL.Repositories.Cards;
 using MonsterTradingCards.Server.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,9 +34,9 @@ namespace MonsterTradingCards.Server
 
         }
 
-        public List<Card> GetAllCards(string username)
+        public string GetAllCardsJSON(string username)
         {
-            throw new NotImplementedException();
+            return JsonConvert.SerializeObject(cardRepository.GetAllUserCards(username));
         }
 
         public Card GetCard(string cardId)
