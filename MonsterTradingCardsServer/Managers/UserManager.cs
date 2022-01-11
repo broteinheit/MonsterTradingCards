@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCards.Server
+namespace MonsterTradingCards.Server.Managers
 {
     public class UserManager : IUserManager
     {

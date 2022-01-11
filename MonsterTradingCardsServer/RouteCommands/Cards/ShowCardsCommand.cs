@@ -1,4 +1,5 @@
 ﻿using MonsterTradingCards.Server.Core.Response;
+using MonsterTradingCards.Server.Managers;
 using MonsterTradingCards.Server.RouteCommands;
 using System;
 using System.Collections.Generic;

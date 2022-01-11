@@ -1,4 +1,5 @@
 ﻿using MonsterTradingCards.Server.DAL.Repositories.Cards;
+using MonsterTradingCards.Server.DAL.Repositories.Deck;
 using MonsterTradingCards.Server.DAL.Repositories.Package;
 using MonsterTradingCards.Server.DAL.Repositories.Users;
 using Npgsql;
@@ -17,6 +18,7 @@ namespace MonsterTradingCards.Server.DAL
         public IUserRepository UserRepository { get; private set; }
         public ICardRepository CardRepository { get; private set; }
         public IPackageRepository PackageRepository { get; private set; }
+        public IDeckRepository DeckRepository { get; private set; }
 
         public Database(string connectionString)
         {
@@ -30,6 +32,7 @@ namespace MonsterTradingCards.Server.DAL
                 UserRepository = new DatabaseUserRepository(_connection);
                 CardRepository = new DatabaseCardRepository(_connection);
                 PackageRepository = new DatabasePackageRepository(_connection);
+                DeckRepository = new DatabaseDeckRepository(_connection);
             }
             catch (NpgsqlException e)
             {

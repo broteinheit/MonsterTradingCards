@@ -15,6 +15,7 @@ using MonsterTradingCards.Server.RouteCommands.Scoreboard;
 using MonsterTradingCards.Server.RouteCommands.Battles;
 using MonsterTradingCards.Server.RouteCommands.Tradings;
 using System.Collections.Generic;
+using MonsterTradingCards.Server.Managers;
 
 namespace MonsterTradingCards.Server
 {
@@ -27,6 +28,7 @@ namespace MonsterTradingCards.Server
             var userManager = new UserManager(db.UserRepository);
             var cardManager = new CardManager(db.CardRepository);
             var packageManager = new PackageManager(db.PackageRepository, db.CardRepository);
+            var deckManager = new DeckManager(db.DeckRepository);
 
             var identityProvider = new UserIdentityProvider(db.UserRepository);
             var routeParser = new IdRouteParser();
@@ -34,13 +36,13 @@ namespace MonsterTradingCards.Server
             
 
             var router = new Router(routeParser, identityProvider);
-            RegisterRoutes(router, userManager, cardManager, packageManager);
+            RegisterRoutes(router, userManager, cardManager, packageManager, deckManager);
 
             var httpServer = new HttpServer(IPAddress.Any, 10001, router);
             httpServer.Start();
         }
 
-        private static void RegisterRoutes(Router router, IUserManager userManager, ICardManager cardManager, IPackageManager packageManager)
+        private static void RegisterRoutes(Router router, IUserManager userManager, ICardManager cardManager, IPackageManager packageManager, IDeckManager deckManager)
         {
             // public routes
             router.AddRoute(HttpMethod.Post, "/sessions", (r, p) => new LoginCommand(userManager, Deserialize<Credentials>(r.Payload)));
@@ -53,7 +55,7 @@ namespace MonsterTradingCards.Server
 
             router.AddProtectedRoute(HttpMethod.Get, "/cards", (r, p) => new ShowCardsCommand(cardManager));
 
-            router.AddProtectedRoute(HttpMethod.Get, "/deck", (r, p) => new ShowDeckCommand());
+            router.AddProtectedRoute(HttpMethod.Get, "/deck", (r, p) => new ShowDeckCommand(deckManager));
             router.AddProtectedRoute(HttpMethod.Put, "/deck", (r, p) => new ConfigureDeckCommand());
             //show deck different representation
 

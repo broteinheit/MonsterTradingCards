@@ -1,7 +1,7 @@
 ﻿using MonsterTradingCards.Server.Models;
 using System.Collections.Generic;
 
-namespace MonsterTradingCards.Server
+namespace MonsterTradingCards.Server.Managers
 {
     public interface IUserManager
     {

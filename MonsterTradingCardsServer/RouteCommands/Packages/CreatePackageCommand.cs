@@ -1,7 +1,6 @@
 ﻿using MonsterTradingCards.Server.Core.Response;
-using MonsterTradingCards.Server.DAL.Repositories.Cards;
+using MonsterTradingCards.Server.Managers;
 using MonsterTradingCards.Server.Models;
-using MonsterTradingCards.Server.RouteCommands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
