@@ -31,7 +31,7 @@ namespace MonsterTradingCards.Server
             var deckManager = new DeckManager(db.DeckRepository);
 
             var identityProvider = new UserIdentityProvider(db.UserRepository);
-            var routeParser = new IdRouteParser();
+            var routeParser = new RouteParser();
 
             
 
@@ -56,7 +56,7 @@ namespace MonsterTradingCards.Server
             router.AddProtectedRoute(HttpMethod.Get, "/cards", (r, p) => new ShowCardsCommand(cardManager));
 
             router.AddProtectedRoute(HttpMethod.Get, "/deck", (r, p) => new ShowDeckCommand(deckManager));
-            router.AddProtectedRoute(HttpMethod.Put, "/deck", (r, p) => new ConfigureDeckCommand());
+            router.AddProtectedRoute(HttpMethod.Put, "/deck", (r, p) => new ConfigureDeckCommand(deckManager, cardManager, Deserialize<List<string>>(r.Payload)));
             //show deck different representation
 
             router.AddProtectedRoute(HttpMethod.Get, "/users/{username}", (r, p) => new GetProfileCommand());

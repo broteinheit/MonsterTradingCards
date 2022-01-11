@@ -41,7 +41,7 @@ namespace MonsterTradingCards.Server.Managers
 
         public Card GetCard(string cardId)
         {
-            throw new NotImplementedException();
+            return cardRepository.GetCardById(cardId);
         }
 
         public void ChangeOwner(Card card, string newOwner)

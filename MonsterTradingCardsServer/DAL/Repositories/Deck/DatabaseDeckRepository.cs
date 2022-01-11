@@ -17,7 +17,7 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Deck
         private const string InsertDeckCommand = "INSERT INTO decks(ownerId, cardIdOne, cardIdTwo, cardIdThree, cardIdFour) " +
             "VALUES (@ownerId, @cardOne, @cardTwo, @cardThree, @cardFour)";
         private const string SelectDeckByOwnerId = "SELECT cardIdOne, cardIdTwo, cardIdThree, cardIdFour FROM decks WHERE ownerId=@ownerId";
-        private const string UpdateDeckCommand = "UPDATE decks SET cardIdOne=@cardOne, cardIdOne=@cardTwo, cardIdOne=@cardThree, cardIdOne=@cardFour, WHERE ownerId = @ownerId";
+        private const string UpdateDeckCommand = "UPDATE decks SET cardIdOne=@cardOne, cardIdTwo=@cardTwo, cardIdThree=@cardThree, cardIdFour=@cardFour WHERE ownerId = @ownerId";
 
         private readonly NpgsqlConnection _connection;
 
@@ -43,6 +43,7 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Deck
 
             if (!res.HasRows)
             {
+                res.Close();
                 return new Models.Deck();
             }
 
@@ -53,7 +54,7 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Deck
             return new Models.Deck() 
             { 
                 owner = username,
-                cardIds = new List<string>() { values[0], values[1], values[2], values[4]} 
+                cardIds = new List<string>() { values[0], values[1], values[2], values[3]} 
             }; 
         }
 
@@ -62,6 +63,10 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Deck
             if (deck.cardIds.Count != 4)
             {
                 throw new Exception($"a Deck needs exactly 4 cards (given: {deck.cardIds.Count})");
+            }
+            else if (deck.cardIds.GroupBy(n => n).Any(c => c.Count() > 1))
+            {
+                throw new Exception($"any given card can only be input once in a deck");
             }
 
             int affectedRows = 0;
@@ -72,9 +77,9 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Deck
                     using var cmd = new NpgsqlCommand(InsertDeckCommand, _connection);
                     cmd.Parameters.AddWithValue("ownerId", deck.owner);
                     cmd.Parameters.AddWithValue("cardOne", deck.cardIds[0]);
-                    cmd.Parameters.AddWithValue("cardOne", deck.cardIds[1]);
-                    cmd.Parameters.AddWithValue("cardOne", deck.cardIds[2]);
-                    cmd.Parameters.AddWithValue("cardOne", deck.cardIds[3]);
+                    cmd.Parameters.AddWithValue("cardTwo", deck.cardIds[1]);
+                    cmd.Parameters.AddWithValue("cardThree", deck.cardIds[2]);
+                    cmd.Parameters.AddWithValue("cardFour", deck.cardIds[3]);
                     affectedRows = cmd.ExecuteNonQuery();
                 }
                 else
@@ -82,9 +87,9 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Deck
                     using var cmd = new NpgsqlCommand(UpdateDeckCommand, _connection);
                     cmd.Parameters.AddWithValue("ownerId", deck.owner);
                     cmd.Parameters.AddWithValue("cardOne", deck.cardIds[0]);
-                    cmd.Parameters.AddWithValue("cardOne", deck.cardIds[1]);
-                    cmd.Parameters.AddWithValue("cardOne", deck.cardIds[2]);
-                    cmd.Parameters.AddWithValue("cardOne", deck.cardIds[3]);
+                    cmd.Parameters.AddWithValue("cardTwo", deck.cardIds[1]);
+                    cmd.Parameters.AddWithValue("cardThree", deck.cardIds[2]);
+                    cmd.Parameters.AddWithValue("cardFour", deck.cardIds[3]);
                     affectedRows = cmd.ExecuteNonQuery();
                 }
             }
