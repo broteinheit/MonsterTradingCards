@@ -42,9 +42,10 @@ namespace MonsterTradingCards.Server.RouteCommands.Packages
 
                 response.StatusCode = StatusCode.Created;
             }
-            catch (Exception)
+            catch (Exception e)
             {
                 response.StatusCode = StatusCode.Conflict;
+                response.Payload = e.Message;
             }
 
             return response;

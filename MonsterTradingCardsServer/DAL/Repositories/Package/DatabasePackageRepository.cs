@@ -33,8 +33,14 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Package
 
         public List<string> AcquireRandomPackage()
         {
+            var packageAmount = GetPackageCount();
+            if (packageAmount <= 0)
+            {
+                throw new ArgumentException("no Package available");
+            }
+
             var random = new Random();
-            int randomPackIdx = random.Next(0, GetPackageCount()-1);
+            int randomPackIdx = random.Next(0, packageAmount-1);
             string[] cardIds = new string[5];
 
             try
