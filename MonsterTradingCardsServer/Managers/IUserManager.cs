@@ -10,5 +10,6 @@ namespace MonsterTradingCards.Server.Managers
         void AdjustGoldForUser(User user, int amount);
         UserInfo GetUserInfo(string username);
         void EditUserInfo(UserInfo userInfo);
+        UserStats GetUserStats(string username);
     }
 }

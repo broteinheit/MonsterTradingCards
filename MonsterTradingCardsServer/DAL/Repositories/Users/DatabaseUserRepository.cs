@@ -12,14 +12,16 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
     class DatabaseUserRepository : IUserRepository
     {
         private const string CreateTableCommand = "CREATE TABLE IF NOT EXISTS users (username VARCHAR PRIMARY KEY, password VARCHAR, token VARCHAR, elo INTEGER, gold INTEGER, " +
-            "name VARCHAR, bio VARCHAR, image VARCHAR)";
+            "name VARCHAR, bio VARCHAR, image VARCHAR, matches_won INTEGER, matches_lost INTEGER, matches_draw INTEGER)";
 
-        private const string InsertUserCommand = "INSERT INTO users(username, password, token, elo, gold) VALUES (@username, @password, @token, @elo, @gold)";
+        private const string InsertUserCommand = "INSERT INTO users(username, password, token, elo, gold, matches_won, matches_lost, matches_draw) " +
+            "VALUES (@username, @password, @token, @elo, @gold, 0, 0, 0)";
         private const string SelectUserByTokenCommand = "SELECT username, password, elo, gold FROM users WHERE token=@token";
         private const string SelectUserByCredentialsCommand = "SELECT username, password, elo, gold FROM users WHERE username=@username AND password=@password";
         private const string UpdateUserGoldCommand = "UPDATE users SET gold = gold + @amount WHERE username = @username";
         private const string SelectUserInfoCommand = "SELECT name, bio, image FROM users WHERE username = @username";
         private const string UpdateUserInfoCommand = "UPDATE users SET name = @name, bio = @bio, image = @image WHERE username = @username";
+        private const string SelectUserStatsCommand = "SELECT elo, matches_won, matches_lost, matches_draw FROM users WHERE username=@username";
 
         private readonly NpgsqlConnection _connection;
 
@@ -156,6 +158,25 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
 
             }
             return affected > 0;
+        }
+
+        public UserStats GetUserStats(string username)
+        {
+            var cmd = new NpgsqlCommand(SelectUserStatsCommand, _connection);
+            cmd.Parameters.AddWithValue("username", username);
+            var reader = cmd.ExecuteReader();
+            var userStats = new UserStats() { Username = username };
+
+            if (reader.Read())
+            {
+                userStats.Elo = Convert.ToInt32(reader["elo"]);
+                userStats.MatchesWon = Convert.ToInt32(reader["matches_won"]);
+                userStats.MatchesLost = Convert.ToInt32(reader["matches_lost"]);
+                userStats.MatchesDraw = Convert.ToInt32(reader["matches_draw"]);
+            }
+            reader.Close();
+
+            return userStats;
         }
     }
 }

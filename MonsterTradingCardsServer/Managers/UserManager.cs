@@ -58,5 +58,10 @@ namespace MonsterTradingCards.Server.Managers
                 throw new Exception("Could not update user info");
             }
         }
+
+        public UserStats GetUserStats(string username)
+        {
+            return userRepository.GetUserStats(username);
+        }
     }
 }

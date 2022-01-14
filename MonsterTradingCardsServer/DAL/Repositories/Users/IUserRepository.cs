@@ -22,5 +22,7 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
         UserInfo GetUserInfo(string username);
 
         bool UpdateUserInfo(UserInfo user);
+
+        UserStats GetUserStats(string username);
     }
 }

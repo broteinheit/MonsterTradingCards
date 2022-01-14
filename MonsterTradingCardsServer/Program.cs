@@ -63,7 +63,7 @@ namespace MonsterTradingCards.Server
             router.AddProtectedRoute(HttpMethod.Get, "/users/{username}", (r, p) => new GetProfileCommand(userManager, p["username"]));
             router.AddProtectedRoute(HttpMethod.Put, "/users/{username}", (r, p) => new EditProfileCommand(userManager, Deserialize<UserInfo>(r.Payload)));
 
-            router.AddProtectedRoute(HttpMethod.Get, "/stats", (r, p) => new GetStatsCommand());
+            router.AddProtectedRoute(HttpMethod.Get, "/stats", (r, p) => new GetStatsCommand(userManager));
 
             router.AddProtectedRoute(HttpMethod.Get, "/score", (r, p) => new ScoreboardCommand());
 
