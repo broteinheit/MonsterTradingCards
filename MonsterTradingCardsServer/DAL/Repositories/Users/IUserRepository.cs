@@ -18,5 +18,9 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
         bool InsertUser(User user);
 
         bool AdjustUserGold(string username, int gold);
+
+        UserInfo GetUserInfo(string username);
+
+        bool UpdateUserInfo(UserInfo user);
     }
 }

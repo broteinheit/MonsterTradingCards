@@ -36,6 +36,7 @@ namespace MonsterTradingCards.Server.RouteCommands.Deck
                         break;
                     case "plain":
                         response.ContentType = "text/plain";
+                        //different representation (maybe card details?)
                         break;
                     default:
                         throw new Exception($"format {format} is not supported");

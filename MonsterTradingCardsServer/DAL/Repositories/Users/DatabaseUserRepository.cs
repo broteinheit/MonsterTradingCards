@@ -11,12 +11,15 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
 {
     class DatabaseUserRepository : IUserRepository
     {
-        private const string CreateTableCommand = "CREATE TABLE IF NOT EXISTS users (username VARCHAR PRIMARY KEY, password VARCHAR, token VARCHAR, elo INTEGER, gold INTEGER)";
+        private const string CreateTableCommand = "CREATE TABLE IF NOT EXISTS users (username VARCHAR PRIMARY KEY, password VARCHAR, token VARCHAR, elo INTEGER, gold INTEGER, " +
+            "name VARCHAR, bio VARCHAR, image VARCHAR)";
 
         private const string InsertUserCommand = "INSERT INTO users(username, password, token, elo, gold) VALUES (@username, @password, @token, @elo, @gold)";
         private const string SelectUserByTokenCommand = "SELECT username, password, elo, gold FROM users WHERE token=@token";
         private const string SelectUserByCredentialsCommand = "SELECT username, password, elo, gold FROM users WHERE username=@username AND password=@password";
         private const string UpdateUserGoldCommand = "UPDATE users SET gold = gold + @amount WHERE username = @username";
+        private const string SelectUserInfoCommand = "SELECT name, bio, image FROM users WHERE username = @username";
+        private const string UpdateUserInfoCommand = "UPDATE users SET name = @name, bio = @bio, image = @image WHERE username = @username";
 
         private readonly NpgsqlConnection _connection;
 
@@ -117,6 +120,42 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
                 Gold = Convert.ToInt32(record["gold"])
             };
             return user;
+        }
+
+        public UserInfo GetUserInfo(string username)
+        {
+            var cmd = new NpgsqlCommand(SelectUserInfoCommand, _connection);
+            cmd.Parameters.AddWithValue("username", username);
+            var reader = cmd.ExecuteReader();
+            var userInfo = new UserInfo() { Username = username};
+
+            if (reader.Read())
+            {
+                userInfo.Name = Convert.ToString(reader["name"]);
+                userInfo.Bio = Convert.ToString(reader["bio"]);
+                userInfo.Image = Convert.ToString(reader["image"]);
+            }
+            reader.Close();
+
+            return userInfo;
+        }
+
+        public bool UpdateUserInfo(UserInfo user)
+        {
+            int affected = 0;
+            try
+            {
+                var cmd = new NpgsqlCommand(UpdateUserInfoCommand, _connection);
+                cmd.Parameters.AddWithValue("username", user.Username);
+                cmd.Parameters.AddWithValue("name", user.Name);
+                cmd.Parameters.AddWithValue("bio", user.Bio);
+                cmd.Parameters.AddWithValue("image", user.Image);
+                affected = cmd.ExecuteNonQuery();
+            } catch (PostgresException)
+            {
+
+            }
+            return affected > 0;
         }
     }
 }

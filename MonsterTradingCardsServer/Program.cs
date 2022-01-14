@@ -60,8 +60,8 @@ namespace MonsterTradingCards.Server
             router.AddProtectedRoute(HttpMethod.Put, "/deck", (r, p) => new ConfigureDeckCommand(deckManager, cardManager, Deserialize<List<string>>(r.Payload)));
             //show deck different representation
 
-            router.AddProtectedRoute(HttpMethod.Get, "/users/{username}", (r, p) => new GetProfileCommand(p["username"]));
-            router.AddProtectedRoute(HttpMethod.Put, "/users/{username}", (r, p) => new EditProfileCommand());
+            router.AddProtectedRoute(HttpMethod.Get, "/users/{username}", (r, p) => new GetProfileCommand(userManager, p["username"]));
+            router.AddProtectedRoute(HttpMethod.Put, "/users/{username}", (r, p) => new EditProfileCommand(userManager, Deserialize<UserInfo>(r.Payload)));
 
             router.AddProtectedRoute(HttpMethod.Get, "/stats", (r, p) => new GetStatsCommand());
 

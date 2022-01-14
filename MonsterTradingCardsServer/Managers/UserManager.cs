@@ -45,5 +45,18 @@ namespace MonsterTradingCards.Server.Managers
                 throw new DuplicateUserException();
             }
         }
+
+        public UserInfo GetUserInfo(string username)
+        {
+            return userRepository.GetUserInfo(username);
+        }
+
+        public void EditUserInfo(UserInfo userInfo)
+        {
+            if (!userRepository.UpdateUserInfo(userInfo))
+            {
+                throw new Exception("Could not update user info");
+            }
+        }
     }
 }
