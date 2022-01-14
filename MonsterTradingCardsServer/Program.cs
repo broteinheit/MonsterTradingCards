@@ -65,7 +65,7 @@ namespace MonsterTradingCards.Server
 
             router.AddProtectedRoute(HttpMethod.Get, "/stats", (r, p) => new GetStatsCommand(userManager));
 
-            router.AddProtectedRoute(HttpMethod.Get, "/score", (r, p) => new ScoreboardCommand());
+            router.AddProtectedRoute(HttpMethod.Get, "/score", (r, p) => new ScoreboardCommand(userManager));
 
             router.AddProtectedRoute(HttpMethod.Post, "/battles", (r, p) => new BattleCommand());
 

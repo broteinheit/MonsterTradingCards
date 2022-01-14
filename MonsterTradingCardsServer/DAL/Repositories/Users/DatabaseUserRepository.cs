@@ -22,6 +22,7 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
         private const string SelectUserInfoCommand = "SELECT name, bio, image FROM users WHERE username = @username";
         private const string UpdateUserInfoCommand = "UPDATE users SET name = @name, bio = @bio, image = @image WHERE username = @username";
         private const string SelectUserStatsCommand = "SELECT elo, matches_won, matches_lost, matches_draw FROM users WHERE username=@username";
+        private const string SelectScoreboardCommand = "SELECT username, elo FROM users";
 
         private readonly NpgsqlConnection _connection;
 
@@ -177,6 +178,27 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
             reader.Close();
 
             return userStats;
+        }
+
+        public Scoreboard GetScoreboard()
+        {
+            var cmd = new NpgsqlCommand(SelectScoreboardCommand, _connection);
+            var reader = cmd.ExecuteReader();
+            var scoreboard = new Scoreboard();
+            scoreboard.entries = new List<ScoreboardEntry>();
+
+            while (reader.Read())
+            {
+                scoreboard.entries.Add(new ScoreboardEntry()
+                {
+                    Username = Convert.ToString(reader["username"]),
+                    Elo = Convert.ToInt32(reader["elo"])
+                });
+            }
+            reader.Close();
+
+            scoreboard.entries.Sort((x, y) => y.Elo.CompareTo(x.Elo));
+            return scoreboard;
         }
     }
 }

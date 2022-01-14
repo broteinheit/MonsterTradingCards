@@ -63,5 +63,10 @@ namespace MonsterTradingCards.Server.Managers
         {
             return userRepository.GetUserStats(username);
         }
+
+        public Scoreboard GetScoreboard()
+        {
+            return userRepository.GetScoreboard();
+        }
     }
 }

@@ -11,5 +11,6 @@ namespace MonsterTradingCards.Server.Managers
         UserInfo GetUserInfo(string username);
         void EditUserInfo(UserInfo userInfo);
         UserStats GetUserStats(string username);
+        Scoreboard GetScoreboard();
     }
 }
