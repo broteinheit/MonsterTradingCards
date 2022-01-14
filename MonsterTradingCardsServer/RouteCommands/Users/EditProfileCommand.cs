@@ -26,6 +26,11 @@ namespace MonsterTradingCards.Server.RouteCommands.Users
             Response response = new Response();
             try
             {
+                if (userInfo.Username != null)
+                {
+                    throw new Exception("Username is not a parameter! You can only change your own profile!");
+                }
+
                 userInfo.Username = User.Username;
                 userManager.EditUserInfo(userInfo);
                 response.StatusCode = StatusCode.Created;
