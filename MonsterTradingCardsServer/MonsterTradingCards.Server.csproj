@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MonsterTradingCardsServer.Core\MonsterTradingCards.Server.Core.csproj" />
-    <ProjectReference Include="..\MonsterTradingCards\MonsterTradingCards.csproj" />
   </ItemGroup>
 
 </Project>

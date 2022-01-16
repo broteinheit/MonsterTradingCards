@@ -16,6 +16,7 @@ namespace MonsterTradingCards.Server.RouteCommands.Battles
     internal class BattleCommand : ProtectedRouteCommand
     {
         private static Queue<BattleHandler> battleQueue = new Queue<BattleHandler>();
+        public static List<User> usersInBattleOrQueue { get; private set; } = new List<User>();
         private BattleHandler battle;
 
         private readonly IUserManager userManager;
@@ -35,7 +36,12 @@ namespace MonsterTradingCards.Server.RouteCommands.Battles
 
             try
             {
-                //TODO check if player already is in battle(-queue)
+                if (usersInBattleOrQueue.Any(u => u.Username == User.Username))
+                {
+                    throw new PlayerAlreadInBattleException();
+                }
+
+                usersInBattleOrQueue.Add(User);
 
                 lock (battleQueue)
                 {
@@ -87,11 +93,19 @@ namespace MonsterTradingCards.Server.RouteCommands.Battles
                 response.Payload = battle.battleLogger.GetCompleteLog();
                 response.StatusCode = StatusCode.Ok;
             }
+            catch (PlayerAlreadInBattleException e)
+            {
+                response.Payload = $"Player {User.Username} already in Battle or Battle Queue";
+                response.StatusCode = StatusCode.BadRequest;
+                return response;
+            }
             catch (Exception ex)
             {
                 response.Payload = ex.Message;
                 response.StatusCode = StatusCode.InternalServerError;
             }
+
+            usersInBattleOrQueue.Remove(User);
 
             return response;
         }
