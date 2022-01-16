@@ -39,17 +39,21 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Deck
 
             var cmd = new NpgsqlCommand(SelectDeckByOwnerId, _connection);
             cmd.Parameters.AddWithValue("ownerId", username);
-            var res = cmd.ExecuteReader();
 
-            if (!res.HasRows)
+            lock (Database.dbLock)
             {
-                res.Close();
-                return new Models.Deck();
-            }
+                var res = cmd.ExecuteReader();
 
-            res.Read();
-            res.GetValues(values);
-            res.Close();
+                if (!res.HasRows)
+                {
+                    res.Close();
+                    return new Models.Deck();
+                }
+
+                res.Read();
+                res.GetValues(values);
+                res.Close();
+            }
 
             return new Models.Deck() 
             { 
@@ -80,7 +84,11 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Deck
                     cmd.Parameters.AddWithValue("cardTwo", deck.cardIds[1]);
                     cmd.Parameters.AddWithValue("cardThree", deck.cardIds[2]);
                     cmd.Parameters.AddWithValue("cardFour", deck.cardIds[3]);
-                    affectedRows = cmd.ExecuteNonQuery();
+
+                    lock (Database.dbLock)
+                    {
+                        affectedRows = cmd.ExecuteNonQuery();
+                    }
                 }
                 else
                 {
@@ -90,7 +98,11 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Deck
                     cmd.Parameters.AddWithValue("cardTwo", deck.cardIds[1]);
                     cmd.Parameters.AddWithValue("cardThree", deck.cardIds[2]);
                     cmd.Parameters.AddWithValue("cardFour", deck.cardIds[3]);
-                    affectedRows = cmd.ExecuteNonQuery();
+
+                    lock (Database.dbLock)
+                    {
+                        affectedRows = cmd.ExecuteNonQuery();
+                    }
                 }
             }
             catch (PostgresException)

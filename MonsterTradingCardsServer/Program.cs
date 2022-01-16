@@ -29,6 +29,7 @@ namespace MonsterTradingCards.Server
             var cardManager = new CardManager(db.CardRepository);
             var packageManager = new PackageManager(db.PackageRepository, db.CardRepository);
             var deckManager = new DeckManager(db.DeckRepository);
+            var tradingsManager = new TradingsManager(db.TradingsRepository, db.CardRepository);
 
             var identityProvider = new UserIdentityProvider(db.UserRepository);
             var routeParser = new RouteParser();
@@ -36,13 +37,13 @@ namespace MonsterTradingCards.Server
             
 
             var router = new Router(routeParser, identityProvider);
-            RegisterRoutes(router, userManager, cardManager, packageManager, deckManager);
+            RegisterRoutes(router, userManager, cardManager, packageManager, deckManager, tradingsManager);
 
             var httpServer = new HttpServer(IPAddress.Any, 10001, router);
             httpServer.Start();
         }
 
-        private static void RegisterRoutes(Router router, IUserManager userManager, ICardManager cardManager, IPackageManager packageManager, IDeckManager deckManager)
+        private static void RegisterRoutes(Router router, IUserManager userManager, ICardManager cardManager, IPackageManager packageManager, IDeckManager deckManager, ITradingsManager tradingsManager)
         {
             // public routes
             router.AddRoute(HttpMethod.Post, "/sessions", (r, p) => new LoginCommand(userManager, Deserialize<Credentials>(r.Payload)));
@@ -69,10 +70,10 @@ namespace MonsterTradingCards.Server
 
             router.AddProtectedRoute(HttpMethod.Post, "/battles", (r, p) => new BattleCommand(userManager, deckManager, cardManager));
 
-            router.AddProtectedRoute(HttpMethod.Get, "/tradings", (r, p) => new GetTradingDealsCommand());
-            router.AddProtectedRoute(HttpMethod.Post, "/tradings", (r, p) => new CreateTradingDealCommand());
-            router.AddProtectedRoute(HttpMethod.Delete, "/tradings/{tradeId}", (r, p) => new DeleteTradingDealCommand());
-            router.AddProtectedRoute(HttpMethod.Post, "/tradings/{tradeId}", (r, p) => new TradeCommand());
+            router.AddProtectedRoute(HttpMethod.Get, "/tradings", (r, p) => new GetTradingDealsCommand(tradingsManager));
+            router.AddProtectedRoute(HttpMethod.Post, "/tradings", (r, p) => new CreateTradingDealCommand(tradingsManager, Deserialize<TradeSerializedObject>(r.Payload)));
+            router.AddProtectedRoute(HttpMethod.Delete, "/tradings/{tradeId}", (r, p) => new DeleteTradingDealCommand(tradingsManager, p["tradeId"]));
+            router.AddProtectedRoute(HttpMethod.Post, "/tradings/{tradeId}", (r, p) => new TradeCommand(tradingsManager, p["tradeId"], Deserialize<string>(r.Payload)));
         }
 
         private static T Deserialize<T>(string payload) where T : class

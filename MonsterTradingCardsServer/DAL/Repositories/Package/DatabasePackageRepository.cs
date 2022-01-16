@@ -47,12 +47,15 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Package
             {
                 //get Package
                 var cmd = new NpgsqlCommand(SelectPackageByIndex, _connection);
-                cmd.Parameters.AddWithValue("offset", randomPackIdx);
+                cmd.Parameters.AddWithValue("offset", 0);//randomPackIdx);
 
-                var res = cmd.ExecuteReader();
-                res.Read();
-                res.GetValues(cardIds);
-                res.Close();
+                lock (Database.dbLock)
+                {
+                    var res = cmd.ExecuteReader();
+                    res.Read();
+                    res.GetValues(cardIds);
+                    res.Close();
+                }
 
                 //delete Package
                 cmd = new NpgsqlCommand(DeletePackage, _connection);
@@ -61,9 +64,13 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Package
                 cmd.Parameters.AddWithValue("cardThreeId", cardIds[2]);
                 cmd.Parameters.AddWithValue("cardFourId", cardIds[3]);
                 cmd.Parameters.AddWithValue("cardFiveId", cardIds[4]);
-                if (cmd.ExecuteNonQuery() == 0)
+
+                lock (Database.dbLock)
                 {
-                    throw new Exception("Package could not be deleted");
+                    if (cmd.ExecuteNonQuery() == 0)
+                    {
+                        throw new Exception("Package could not be deleted");
+                    }
                 }
             }
             catch (PostgresException)
@@ -86,7 +93,11 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Package
                 cmd.Parameters.AddWithValue("cardThreeId", package.Cards[2].Id);
                 cmd.Parameters.AddWithValue("cardFourId", package.Cards[3].Id);
                 cmd.Parameters.AddWithValue("cardFiveId", package.Cards[4].Id);
-                affectedRows = cmd.ExecuteNonQuery();
+
+                lock (Database.dbLock)
+                {
+                    affectedRows = cmd.ExecuteNonQuery();
+                }
             }
             catch (PostgresException)
             {

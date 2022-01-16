@@ -87,7 +87,14 @@ namespace MonsterTradingCards.Server.RouteCommands.Battles
                 else 
                 {
                     //player 2 waits till battle is over
-                    while (battle.battleState != BattleState.DONE) { Thread.Sleep(100); }
+                    while (battle.battleState != BattleState.DONE) 
+                    { 
+                        Thread.Sleep(100); 
+                        if (battle.battleState == BattleState.NONE)
+                        {
+                            throw new Exception("Error encountered!");
+                        }
+                    }
                 }
 
                 response.Payload = battle.battleLogger.GetCompleteLog();

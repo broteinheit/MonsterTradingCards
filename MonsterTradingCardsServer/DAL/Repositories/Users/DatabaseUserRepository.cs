@@ -44,12 +44,15 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
                 cmd.Parameters.AddWithValue("token", authToken);
 
                 // take the first row, if any
-                using var reader = cmd.ExecuteReader();
-                if (reader.Read())
+                lock (Database.dbLock)
                 {
-                    user = ReadUser(reader);
+                    var reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        user = ReadUser(reader);
+                    }
+                    reader.Close();
                 }
-                reader.Close();
             }
             return user;
         }
@@ -63,10 +66,14 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
                 cmd.Parameters.AddWithValue("password", password);
 
                 // take the first row, if any
-                using var reader = cmd.ExecuteReader();
-                if (reader.Read())
+                lock (Database.dbLock)
                 {
-                    user = ReadUser(reader);
+                    using var reader = cmd.ExecuteReader();
+                    if (reader.Read())
+                    {
+                        user = ReadUser(reader);
+                    }
+                    reader.Close();
                 }
             }
             return user;
@@ -83,7 +90,10 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
                 cmd.Parameters.AddWithValue("token", user.Token);
                 cmd.Parameters.AddWithValue("elo", user.Elo);
                 cmd.Parameters.AddWithValue("gold", user.Gold);
-                affectedRows = cmd.ExecuteNonQuery();
+                lock (Database.dbLock)
+                {
+                    affectedRows = cmd.ExecuteNonQuery();
+                }
             }
             catch (PostgresException)
             {
@@ -101,7 +111,10 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
                 using var cmd = new NpgsqlCommand(UpdateUserGoldCommand, _connection);
                 cmd.Parameters.AddWithValue("username", username);
                 cmd.Parameters.AddWithValue("amount", gold);
-                affectedRows = cmd.ExecuteNonQuery();
+                lock (Database.dbLock)
+                {
+                    affectedRows = cmd.ExecuteNonQuery();
+                }
             }
             catch (PostgresException)
             {
@@ -133,18 +146,21 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
         {
             var cmd = new NpgsqlCommand(SelectUserInfoCommand, _connection);
             cmd.Parameters.AddWithValue("username", username);
-            var reader = cmd.ExecuteReader();
-            var userInfo = new UserInfo() { Username = username};
-
-            if (reader.Read())
+            lock (Database.dbLock)
             {
-                userInfo.Name = Convert.ToString(reader["name"]);
-                userInfo.Bio = Convert.ToString(reader["bio"]);
-                userInfo.Image = Convert.ToString(reader["image"]);
-            }
-            reader.Close();
+                var reader = cmd.ExecuteReader();
+                var userInfo = new UserInfo() { Username = username };
 
-            return userInfo;
+                if (reader.Read())
+                {
+                    userInfo.Name = Convert.ToString(reader["name"]);
+                    userInfo.Bio = Convert.ToString(reader["bio"]);
+                    userInfo.Image = Convert.ToString(reader["image"]);
+                }
+                reader.Close();
+                return userInfo;
+            }
+
         }
 
         public bool UpdateUserInfo(UserInfo user)
@@ -157,7 +173,11 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
                 cmd.Parameters.AddWithValue("name", user.Name);
                 cmd.Parameters.AddWithValue("bio", user.Bio);
                 cmd.Parameters.AddWithValue("image", user.Image);
-                affected = cmd.ExecuteNonQuery();
+
+                lock (Database.dbLock)
+                {
+                    affected = cmd.ExecuteNonQuery();
+                }
             } catch (PostgresException)
             {
 
@@ -169,40 +189,48 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
         {
             var cmd = new NpgsqlCommand(SelectUserStatsCommand, _connection);
             cmd.Parameters.AddWithValue("username", username);
-            var reader = cmd.ExecuteReader();
-            var userStats = new UserStats() { Username = username };
 
-            if (reader.Read())
+            lock (Database.dbLock)
             {
-                userStats.Elo = Convert.ToInt32(reader["elo"]);
-                userStats.MatchesWon = Convert.ToInt32(reader["matches_won"]);
-                userStats.MatchesLost = Convert.ToInt32(reader["matches_lost"]);
-                userStats.MatchesDraw = Convert.ToInt32(reader["matches_draw"]);
-            }
-            reader.Close();
+                var reader = cmd.ExecuteReader();
+                var userStats = new UserStats() { Username = username };
 
-            return userStats;
+                if (reader.Read())
+                {
+                    userStats.Elo = Convert.ToInt32(reader["elo"]);
+                    userStats.MatchesWon = Convert.ToInt32(reader["matches_won"]);
+                    userStats.MatchesLost = Convert.ToInt32(reader["matches_lost"]);
+                    userStats.MatchesDraw = Convert.ToInt32(reader["matches_draw"]);
+                }
+                reader.Close();
+
+                return userStats;
+            }
         }
 
         public Scoreboard GetScoreboard()
         {
             var cmd = new NpgsqlCommand(SelectScoreboardCommand, _connection);
-            var reader = cmd.ExecuteReader();
-            var scoreboard = new Scoreboard();
-            scoreboard.entries = new List<ScoreboardEntry>();
 
-            while (reader.Read())
+            lock (Database.dbLock)
             {
-                scoreboard.entries.Add(new ScoreboardEntry()
-                {
-                    Username = Convert.ToString(reader["username"]),
-                    Elo = Convert.ToInt32(reader["elo"])
-                });
-            }
-            reader.Close();
+                var reader = cmd.ExecuteReader();
+                var scoreboard = new Scoreboard();
+                scoreboard.entries = new List<ScoreboardEntry>();
 
-            scoreboard.entries.Sort((x, y) => y.Elo.CompareTo(x.Elo));
-            return scoreboard;
+                while (reader.Read())
+                {
+                    scoreboard.entries.Add(new ScoreboardEntry()
+                    {
+                        Username = Convert.ToString(reader["username"]),
+                        Elo = Convert.ToInt32(reader["elo"])
+                    });
+                }
+                reader.Close();
+
+                scoreboard.entries.Sort((x, y) => y.Elo.CompareTo(x.Elo));
+                return scoreboard;
+            }
         }
 
         public bool AdjustUserElo(string username, int elo)
@@ -213,7 +241,11 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
                 using var cmd = new NpgsqlCommand(UpdateUserEloCommand, _connection);
                 cmd.Parameters.AddWithValue("username", username);
                 cmd.Parameters.AddWithValue("amount", elo);
-                affectedRows = cmd.ExecuteNonQuery();
+
+                lock (Database.dbLock)
+                {
+                    affectedRows = cmd.ExecuteNonQuery();
+                }
             }
             catch (PostgresException)
             {
@@ -246,8 +278,13 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
                     default:
                         return false;
                 }
+
                 cmd.Parameters.AddWithValue("username", username);
-                affectedRows = cmd.ExecuteNonQuery();
+
+                lock (Database.dbLock)
+                {
+                    affectedRows = cmd.ExecuteNonQuery();
+                }
             }
             catch (PostgresException)
             {

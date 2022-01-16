@@ -99,6 +99,12 @@ namespace MonsterTradingCards.Server.BattleLogic.Battle
             Cards.Deck deckP1 = new Cards.Deck(deckManager.GetDeckByUsername(player1.Username), cardManager);
             Cards.Deck deckP2 = new Cards.Deck(deckManager.GetDeckByUsername(player2.Username), cardManager);
 
+            if (deckP1.GetCardCount() <= 0 || deckP2.GetCardCount() <= 0)
+            {
+                battleState = BattleState.NONE;
+                throw new Exception("Not all players have configured decks!");
+            }
+
             //Start fight (while not round 100 reached and both players still have cards)
             while (round < 100 && deckP1.GetCardCount() > 0 && deckP2.GetCardCount() > 0)   //TODO change access to decks
             {

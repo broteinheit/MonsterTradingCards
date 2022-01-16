@@ -37,19 +37,23 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Cards
             List<Card> result = new List<Card>();
             var cmd = new NpgsqlCommand(SelectAllUserCards, _connection);
             cmd.Parameters.AddWithValue("username", Username);
-            var reader = cmd.ExecuteReader();
 
-            while (reader.Read())
+            lock (Database.dbLock)
             {
-                result.Add(new Card() 
-                { 
-                    Id = reader.GetString(0),
-                    Name = reader.GetString(1),
-                    Damage = reader.GetDouble(2),
-                    OwnerUsername = reader.GetString(3),
-                });
+                var reader = cmd.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    result.Add(new Card()
+                    {
+                        Id = reader.GetString(0),
+                        Name = reader.GetString(1),
+                        Damage = reader.GetDouble(2),
+                        OwnerUsername = reader.GetString(3),
+                    });
+                }
+                reader.Close();
             }
-            reader.Close();
             return result;
         }
 
@@ -59,10 +63,14 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Cards
 
             var cmd = new NpgsqlCommand(SelectCardById, _connection);
             cmd.Parameters.AddWithValue("cardId", cardId);
-            var res = cmd.ExecuteReader();
-            res.Read();
-            res.GetValues(values);
-            res.Close();
+
+            lock (Database.dbLock)
+            {
+                var res = cmd.ExecuteReader();
+                res.Read();
+                res.GetValues(values);
+                res.Close();
+            }
 
             return new Card()
             {
@@ -83,7 +91,11 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Cards
                 cmd.Parameters.AddWithValue("cardName", card.Name);
                 cmd.Parameters.AddWithValue("damage", card.Damage);
                 cmd.Parameters.Add(new NpgsqlParameter<string>("owner", card.OwnerUsername));
-                affectedRows = cmd.ExecuteNonQuery();
+
+                lock (Database.dbLock)
+                {
+                    affectedRows = cmd.ExecuteNonQuery();
+                }
             }
             catch (PostgresException)
             {
@@ -101,7 +113,11 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Cards
                 using var cmd = new NpgsqlCommand(UpdateCardCommand, _connection);
                 cmd.Parameters.AddWithValue("cardId", card.Id);
                 cmd.Parameters.Add(new NpgsqlParameter<string>("newOwner", card.OwnerUsername));
-                affectedRows = cmd.ExecuteNonQuery();
+
+                lock (Database.dbLock)
+                {
+                    affectedRows = cmd.ExecuteNonQuery();
+                }
             }
             catch (PostgresException)
             {

@@ -1,6 +1,7 @@
 ﻿using MonsterTradingCards.Server.BattleLogic.Cards.CardType;
 using MonsterTradingCards.Server.BattleLogic.Cards.ElementType;
 using MonsterTradingCards.Server.Managers;
+using MonsterTradingCards.Server.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,15 +20,12 @@ namespace MonsterTradingCards.Server.BattleLogic.Cards
             {
                 Models.Card card = cardManager.GetCard(cardId);
                 string[] nameSplit = Regex.Split(card.Name, @"(?<!^)(?=[A-Z])");
+                IElementType elemType = nameSplit.Length == 2 ? StringToCardType.convertStringToElementType(nameSplit[0]) : new NormalElementType();
+                ICardType cardType = nameSplit.Length == 2 
+                    ? StringToCardType.convertStringToCardType(nameSplit[1]) 
+                    : StringToCardType.convertStringToCardType(nameSplit[0]);
 
-                if (nameSplit.Length != 2)
-                {
-                    cards.Add(new GameCard(cardId, card.Damage, new NormalElementType(), convertStringToCardType(nameSplit[0])));
-                } 
-                else
-                {
-                    cards.Add(new GameCard(cardId, card.Damage, convertStringToElementType(nameSplit[0]), convertStringToCardType(nameSplit[1])));
-                }
+                    cards.Add(new GameCard(cardId, card.Damage, elemType, cardType));
             }
         }
 
@@ -49,31 +47,6 @@ namespace MonsterTradingCards.Server.BattleLogic.Cards
             return cards.Count;
         }
 
-
-
-
-
-        private IElementType convertStringToElementType(string elementTypeString)
-        {
-            if (elementTypeString == "Regular")
-            {
-                elementTypeString = "Normal";
-            }
-
-            var elementType = typeof(IElementType).Assembly.GetTypes().Where(t => t.Name == elementTypeString + "ElementType").FirstOrDefault();
-            return (IElementType)Activator.CreateInstance(elementType);
-        }
-        
-        private ICardType convertStringToCardType(string cardTypeString)
-        {
-            if (cardTypeString == "Spell")
-            {
-                return new SpellType();
-            }
-
-            var elementType = typeof(ICardType).Assembly.GetTypes().Where(t => t.Name == cardTypeString + "MonsterType").FirstOrDefault();
-            return (ICardType)Activator.CreateInstance(elementType);
-        }
 
         private List<GameCard> cards { get; set; }
     }
