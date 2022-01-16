@@ -13,11 +13,13 @@ namespace MonsterTradingCards.Server.RouteCommands.Users
     internal class EditProfileCommand : ProtectedRouteCommand
     {
         private UserInfo userInfo;
+        private string username;
         private readonly IUserManager userManager;
 
-        public EditProfileCommand(IUserManager userManager, UserInfo userInfo)
+        public EditProfileCommand(IUserManager userManager, string username, UserInfo userInfo)
         {
             this.userManager = userManager;
+            this.username = username;
             this.userInfo = userInfo;
         }
 
@@ -29,6 +31,10 @@ namespace MonsterTradingCards.Server.RouteCommands.Users
                 if (userInfo.Username != null)
                 {
                     throw new Exception("Username is not a parameter! You can only change your own profile!");
+                }
+                else if (username != User.Username)
+                {
+                    throw new Exception("Invalid Username! You can only change your own Profile!");
                 }
 
                 userInfo.Username = User.Username;
