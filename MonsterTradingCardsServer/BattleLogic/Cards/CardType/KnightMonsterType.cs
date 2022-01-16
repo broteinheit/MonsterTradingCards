@@ -1,11 +1,11 @@
-﻿using MonsterTradingCards.Cards.ElementType;
+﻿using MonsterTradingCards.Server.BattleLogic.Cards.ElementType;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCards.Cards.CardType
+namespace MonsterTradingCards.Server.BattleLogic.Cards.CardType
 {
     internal class KnightMonsterType : ICardType
     {

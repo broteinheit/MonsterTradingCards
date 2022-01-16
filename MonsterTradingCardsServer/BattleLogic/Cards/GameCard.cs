@@ -1,21 +1,21 @@
-﻿using MonsterTradingCards.Cards.CardType;
-using MonsterTradingCards.Cards.ElementType;
+﻿using MonsterTradingCards.Server.BattleLogic.Cards.CardType;
+using MonsterTradingCards.Server.BattleLogic.Cards.ElementType;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCards.Cards
+namespace MonsterTradingCards.Server.BattleLogic.Cards
 {
-    class Card
+    class GameCard
     {
         public string GetCardName()
         {
             return elementType.GetTypeName() + cardType.GetTypeName();
         }
 
-        public Card(string cardId, int playerId, double damage, IElementType elementType, ICardType cardType)
+        public GameCard(string cardId, double damage, IElementType elementType, ICardType cardType)
         {
             this.cardId = cardId;
             this.damage = damage;
@@ -23,9 +23,9 @@ namespace MonsterTradingCards.Cards
             this.cardType = cardType;
         }
 
-        public Card Clone()
+        public GameCard Clone()
         {
-            return (Card)this.MemberwiseClone();
+            return (GameCard)this.MemberwiseClone();
         }
 
         public void AdjustDamageByElementType(IElementType otherCardElementType)

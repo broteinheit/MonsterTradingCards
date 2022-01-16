@@ -23,6 +23,10 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
         private const string UpdateUserInfoCommand = "UPDATE users SET name = @name, bio = @bio, image = @image WHERE username = @username";
         private const string SelectUserStatsCommand = "SELECT elo, matches_won, matches_lost, matches_draw FROM users WHERE username=@username";
         private const string SelectScoreboardCommand = "SELECT username, elo FROM users";
+        private const string UpdateUserEloCommand = "UPDATE users SET elo = elo + @amount WHERE username = @username";
+        private const string UpdateUserWinsCommand = "UPDATE users SET matches_won = matches_won + 1 WHERE username = @username";
+        private const string UpdateUserLosesCommand = "UPDATE users SET matches_lost = matches_lost + 1 WHERE username = @username";
+        private const string UpdateUserDrawsCommand = "UPDATE users SET matches_draw = matches_draw + 1 WHERE username = @username";
 
         private readonly NpgsqlConnection _connection;
 
@@ -199,6 +203,58 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
 
             scoreboard.entries.Sort((x, y) => y.Elo.CompareTo(x.Elo));
             return scoreboard;
+        }
+
+        public bool AdjustUserElo(string username, int elo)
+        {
+            var affectedRows = 0;
+            try
+            {
+                using var cmd = new NpgsqlCommand(UpdateUserEloCommand, _connection);
+                cmd.Parameters.AddWithValue("username", username);
+                cmd.Parameters.AddWithValue("amount", elo);
+                affectedRows = cmd.ExecuteNonQuery();
+            }
+            catch (PostgresException)
+            {
+                // this might happen, if the user already exists (constraint violation)
+                // we just catch it an keep affectedRows at zero
+            }
+            return affectedRows > 0;
+        }
+
+        public bool AddToUserWinLoseStat(string username, WinLoseDrawColumns result)
+        {
+            var affectedRows = 0;
+            try
+            {
+                NpgsqlCommand cmd;
+                switch (result)
+                {
+                    case WinLoseDrawColumns.WINNER:
+                        cmd = new NpgsqlCommand(UpdateUserWinsCommand, _connection);
+                        cmd.Parameters.AddWithValue("col", "matches_won");
+                        break;
+                    case WinLoseDrawColumns.LOSER:
+                        cmd = new NpgsqlCommand(UpdateUserLosesCommand, _connection);
+                        cmd.Parameters.AddWithValue("col", "matches_lost");
+                        break;
+                    case WinLoseDrawColumns.DRAW:
+                        cmd = new NpgsqlCommand(UpdateUserDrawsCommand, _connection);
+                        cmd.Parameters.AddWithValue("col", "matches_draw");
+                        break;
+                    default:
+                        return false;
+                }
+                cmd.Parameters.AddWithValue("username", username);
+                affectedRows = cmd.ExecuteNonQuery();
+            }
+            catch (PostgresException)
+            {
+                // this might happen, if the user already exists (constraint violation)
+                // we just catch it an keep affectedRows at zero
+            }
+            return affectedRows > 0;
         }
     }
 }

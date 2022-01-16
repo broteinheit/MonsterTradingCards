@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MonsterTradingCards.Cards;
-using MonsterTradingCards.Cards.CardType;
-using MonsterTradingCards.Logger;
+using MonsterTradingCards.Server.BattleLogic.Cards;
+using MonsterTradingCards.Server.BattleLogic.Cards.CardType;
+using MonsterTradingCards.Server.BattleLogic.Logger;
 
-namespace MonsterTradingCards.Battle
+namespace MonsterTradingCards.Server.BattleLogic.Battle
 {
     internal class BattleLogic
     {
@@ -16,7 +16,7 @@ namespace MonsterTradingCards.Battle
             this.logBuilder = logBuilder;
         }
 
-        public BattleRoundResult RunRound(Card cardP1, Card cardP2)
+        public BattleRoundResult RunRound(GameCard cardP1, GameCard cardP2)
         {
             //Consider Specialties
             cardP1.ConsiderSpecialties(cardP2.cardType, cardP2.elementType);
@@ -42,7 +42,7 @@ namespace MonsterTradingCards.Battle
 
         //PlayerA: FireSpell (10 Damage) vs PlayerB: WaterSpell (20 Damage) => 10 VS 20 -> 05 VS 40 => WaterSpell wins
 
-        private BattleRoundResult CalculateWinner(Card cardP1, Card cardP2)
+        private BattleRoundResult CalculateWinner(GameCard cardP1, GameCard cardP2)
         {
             if (cardP1.damage > cardP2.damage)
             {

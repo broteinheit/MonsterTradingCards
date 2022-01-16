@@ -1,4 +1,5 @@
-﻿using MonsterTradingCards.Server.Models;
+﻿using MonsterTradingCards.Server.DAL.Repositories.Users;
+using MonsterTradingCards.Server.Models;
 using System.Collections.Generic;
 
 namespace MonsterTradingCards.Server.Managers
@@ -12,5 +13,7 @@ namespace MonsterTradingCards.Server.Managers
         void EditUserInfo(UserInfo userInfo);
         UserStats GetUserStats(string username);
         Scoreboard GetScoreboard();
+        void AdjustEloForUser(User user, int amount);
+        void AdjustWinLoseForUser(User user, WinLoseDrawColumns result);
     }
 }

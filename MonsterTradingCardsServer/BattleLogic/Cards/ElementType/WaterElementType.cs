@@ -1,26 +1,26 @@
-﻿using MonsterTradingCards.Cards.CardType;
+﻿using MonsterTradingCards.Server.BattleLogic.Cards.CardType;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCards.Cards.ElementType
+namespace MonsterTradingCards.Server.BattleLogic.Cards.ElementType
 {
-    internal class FireElementType : IElementType
+    internal class WaterElementType : IElementType
     {
         public string GetTypeName()
         {
-            return "Fire";
+            return "Water";
         }
 
         public double Compare(IElementType otherElementType)
         {
             switch (otherElementType)
             {
-                case WaterElementType:
-                    return 0.5;
                 case NormalElementType:
+                    return 0.5;
+                case FireElementType:
                     return 2;
                 default:
                     return 1;

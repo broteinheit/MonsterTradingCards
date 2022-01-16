@@ -68,5 +68,21 @@ namespace MonsterTradingCards.Server.Managers
         {
             return userRepository.GetScoreboard();
         }
+
+        public void AdjustEloForUser(User user, int amount)
+        {
+            if (!userRepository.AdjustUserElo(user.Username, amount))
+            {
+                throw new Exception("Could not reduce gold");
+            }
+        }
+
+        public void AdjustWinLoseForUser(User user, WinLoseDrawColumns result)
+        {
+            if (!userRepository.AddToUserWinLoseStat(user.Username, result))
+            {
+                throw new Exception("Could not update WinLoseDraw stats");
+            }
+        }
     }
 }

@@ -26,5 +26,8 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
         UserStats GetUserStats(string username);
 
         Scoreboard GetScoreboard();
+        
+        bool AdjustUserElo(string username, int elo);
+        bool AddToUserWinLoseStat(string username, WinLoseDrawColumns result);
     }
 }

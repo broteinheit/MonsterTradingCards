@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MonsterTradingCards.Logger
+namespace MonsterTradingCards.Server.BattleLogic.Logger
 {
     internal class BattleLogStringBuilder
     {
