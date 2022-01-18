@@ -106,7 +106,7 @@ namespace MonsterTradingCards.Server.BattleLogic.Battle
             }
 
             //Start fight (while not round 100 reached and both players still have cards)
-            while (round < 100 && deckP1.GetCardCount() > 0 && deckP2.GetCardCount() > 0)   //TODO change access to decks
+            while (round < 100 && deckP1.GetCardCount() > 0 && deckP2.GetCardCount() > 0)
             {
                 GameCard cardP1 = deckP1.DrawRandomCard();
                 GameCard cardP2 = deckP2.DrawRandomCard();

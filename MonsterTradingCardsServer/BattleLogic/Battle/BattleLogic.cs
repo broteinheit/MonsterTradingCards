@@ -46,17 +46,17 @@ namespace MonsterTradingCards.Server.BattleLogic.Battle
         {
             if (cardP1.damage > cardP2.damage)
             {
-                //Player 1 won the round -> return 0
+                //Player 1 won the round
                 return BattleRoundResult.PLAYER1_WIN;
             }
             else if (cardP2.damage > cardP1.damage)
             {
-                //Player 2 won the round -> return 1
+                //Player 2 won the round
                 return BattleRoundResult.PLAYER2_WIN;
             }
             else
             {
-                //draw -> return -1
+                //draw
                 return BattleRoundResult.DRAW;
             }
         }
