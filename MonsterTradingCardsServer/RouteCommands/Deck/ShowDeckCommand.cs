@@ -1,6 +1,9 @@
-﻿using MonsterTradingCards.Server.Core.Response;
+﻿using MonsterTradingCards.Server.BattleLogic.Cards.CardType;
+using MonsterTradingCards.Server.BattleLogic.Cards.ElementType;
+using MonsterTradingCards.Server.Core.Response;
 using MonsterTradingCards.Server.Managers;
 using MonsterTradingCards.Server.RouteCommands;
+using MonsterTradingCards.Server.Utility;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,11 +16,13 @@ namespace MonsterTradingCards.Server.RouteCommands.Deck
     internal class ShowDeckCommand : ProtectedRouteCommand
     {
         private readonly IDeckManager deckManager;
+        private readonly ICardManager cardManager;
         private readonly string format;
 
-        public ShowDeckCommand(IDeckManager deckManager, string format="json")
+        public ShowDeckCommand(IDeckManager deckManager, ICardManager cardManager, string format="json")
         {
             this.deckManager = deckManager;
+            this.cardManager = cardManager;
             this.format = format;
         }
 
@@ -26,17 +31,26 @@ namespace MonsterTradingCards.Server.RouteCommands.Deck
             var response = new Response();
             try
             {
-                Models.Deck deck = deckManager.GetDeckByUsername(User.Username);
+                List<Models.Card> cards = new List<Models.Card>();
+
+                foreach (var cardId in deckManager.GetDeckByUsername(User.Username).cardIds)
+                {
+                    cards.Add(cardManager.GetCard(cardId));
+                }
+
                 response.StatusCode = StatusCode.Ok;
-                response.Payload = JsonConvert.SerializeObject(deck.cardIds);
                 switch (format)
                 {
                     case "json":
-                        response.ContentType = "application/json";
+                        response.Payload = JsonConvert.SerializeObject(cards);
                         break;
                     case "plain":
-                        response.ContentType = "text/plain";
-                        //different representation (maybe card details?)
+                        foreach (var card in cards)
+                        {
+                            (IElementType, ICardType) types = StringToCardType.GetCardAndElementTypeFromString(card.Name);
+                            response.Payload += $"Id: {card.Id}\n-> CardName: {card.Name}, Damage: {card.Damage}\n" +
+                                $"-> Element: {types.Item1.GetTypeName()}, CardType: {types.Item2.GetTypeName()}\n\n";
+                        }
                         break;
                     default:
                         throw new Exception($"format {format} is not supported");

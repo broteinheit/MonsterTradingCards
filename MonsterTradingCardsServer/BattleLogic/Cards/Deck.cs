@@ -19,13 +19,8 @@ namespace MonsterTradingCards.Server.BattleLogic.Cards
             foreach (var cardId in dbDeck.cardIds)
             {
                 Models.Card card = cardManager.GetCard(cardId);
-                string[] nameSplit = Regex.Split(card.Name, @"(?<!^)(?=[A-Z])");
-                IElementType elemType = nameSplit.Length == 2 ? StringToCardType.convertStringToElementType(nameSplit[0]) : new NormalElementType();
-                ICardType cardType = nameSplit.Length == 2 
-                    ? StringToCardType.convertStringToCardType(nameSplit[1]) 
-                    : StringToCardType.convertStringToCardType(nameSplit[0]);
-
-                    cards.Add(new GameCard(cardId, card.Damage, elemType, cardType));
+                (IElementType, ICardType) types = StringToCardType.GetCardAndElementTypeFromString(card.Name);
+                cards.Add(new GameCard(cardId, card.Damage, types.Item1, types.Item2));
             }
         }
 
