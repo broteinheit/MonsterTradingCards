@@ -26,6 +26,7 @@ namespace MonsterTradingCards.Server.RouteCommands.Users
             Response response = new Response();
             try
             {
+                //check if user tries to access somebody else's profile
                 if (User.Username != username)
                 {
                     throw new Exception("Not Authorized!");

@@ -27,16 +27,19 @@ namespace MonsterTradingCards.Server.RouteCommands.Deck
             var response = new Response();
             try
             {
+                //check if user is in battle or queue
                 if (Battles.BattleCommand.usersInBattleOrQueue.Any(u => u.Username == User.Username))
                 {
                     throw new Exception($"Player {User.Username} is already in a Battle Queue");
                 }
+
+                //check if player provided 4 cards
                 if (cardIds.Count != 4)
                 {
                     throw new Exception("a Deck needs exactly 4 cards!");
                 } 
 
-
+                //check if player owns all provided cards
                 foreach (var c in cardIds)
                 {
                     if (cardManager.GetCard(c).OwnerUsername != User.Username)

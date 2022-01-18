@@ -28,11 +28,8 @@ namespace MonsterTradingCards.Server.RouteCommands.Users
             Response response = new Response();
             try
             {
-                if (userInfo.Username != null)
-                {
-                    throw new Exception("Username is not a parameter! You can only change your own profile!");
-                }
-                else if (username != User.Username)
+                //check if user tries to access somebody else's profile
+                if (username != User.Username)
                 {
                     throw new Exception("Invalid Username! You can only change your own Profile!");
                 }

@@ -28,6 +28,7 @@ namespace MonsterTradingCards.Server.RouteCommands.Packages
             var response = new Response();
             try
             {
+                //check if user has enough gold
                 if (User.Gold < 5)
                 {
                     throw new Exception("Not enough Gold");
