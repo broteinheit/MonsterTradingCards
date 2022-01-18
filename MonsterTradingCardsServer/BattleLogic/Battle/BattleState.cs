@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.BattleLogic.Battle
 {
-    internal enum BattleState
+    public enum BattleState
     {
         WAITING,
         IN_PROGRESS,

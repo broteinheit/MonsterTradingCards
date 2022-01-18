@@ -16,6 +16,7 @@ using MonsterTradingCards.Server.RouteCommands.Battles;
 using MonsterTradingCards.Server.RouteCommands.Tradings;
 using System.Collections.Generic;
 using MonsterTradingCards.Server.Managers;
+using MonsterTradingCards.Server.BattleLogic.Battle;
 
 namespace MonsterTradingCards.Server
 {
@@ -31,19 +32,22 @@ namespace MonsterTradingCards.Server
             var deckManager = new DeckManager(db.DeckRepository);
             var tradingsManager = new TradingsManager(db.TradingsRepository, db.CardRepository);
 
+            var gameManager = new GameManager(deckManager, cardManager, userManager);
+
             var identityProvider = new UserIdentityProvider(db.UserRepository);
             var routeParser = new RouteParser();
 
             
 
             var router = new Router(routeParser, identityProvider);
-            RegisterRoutes(router, userManager, cardManager, packageManager, deckManager, tradingsManager);
+            RegisterRoutes(router, userManager, cardManager, packageManager, deckManager, tradingsManager, gameManager);
 
             var httpServer = new HttpServer(IPAddress.Any, 10001, router);
             httpServer.Start();
         }
 
-        private static void RegisterRoutes(Router router, IUserManager userManager, ICardManager cardManager, IPackageManager packageManager, IDeckManager deckManager, ITradingsManager tradingsManager)
+        private static void RegisterRoutes(Router router, IUserManager userManager, ICardManager cardManager, 
+            IPackageManager packageManager, IDeckManager deckManager, ITradingsManager tradingsManager, GameManager gameManager)
         {
             // public routes
             router.AddRoute(HttpMethod.Post, "/sessions", (r, p) => new LoginCommand(userManager, Deserialize<Credentials>(r.Payload)));
@@ -68,7 +72,7 @@ namespace MonsterTradingCards.Server
 
             router.AddProtectedRoute(HttpMethod.Get, "/score", (r, p) => new ScoreboardCommand(userManager));
 
-            router.AddProtectedRoute(HttpMethod.Post, "/battles", (r, p) => new BattleCommand(userManager, deckManager, cardManager));
+            router.AddProtectedRoute(HttpMethod.Post, "/battles", (r, p) => new BattleCommand(gameManager));
 
             router.AddProtectedRoute(HttpMethod.Get, "/tradings", (r, p) => new GetTradingDealsCommand(tradingsManager));
             router.AddProtectedRoute(HttpMethod.Post, "/tradings", (r, p) => new CreateTradingDealCommand(tradingsManager, Deserialize<TradeSerializedObject>(r.Payload)));

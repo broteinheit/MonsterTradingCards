@@ -10,7 +10,7 @@ using MonsterTradingCards.Server.Models;
 
 namespace MonsterTradingCards.Server.BattleLogic.Battle
 {
-    internal class BattleHandler
+    class BattleHandler
     {
         public BattleHandler(IDeckManager deckManager, ICardManager cardManager)
         {

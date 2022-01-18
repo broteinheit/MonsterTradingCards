@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.BattleLogic.Logger
 {
-    internal interface IBattleLogger
+    public interface IBattleLogger
     {
         void AddRoundLog(string log);
         string GetCompleteLog();

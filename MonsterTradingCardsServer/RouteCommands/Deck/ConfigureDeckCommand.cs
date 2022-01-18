@@ -1,4 +1,5 @@
-﻿using MonsterTradingCards.Server.Core.Response;
+﻿using MonsterTradingCards.Server.BattleLogic.Battle;
+using MonsterTradingCards.Server.Core.Response;
 using MonsterTradingCards.Server.Managers;
 using MonsterTradingCards.Server.RouteCommands;
 using System;
@@ -28,7 +29,7 @@ namespace MonsterTradingCards.Server.RouteCommands.Deck
             try
             {
                 //check if user is in battle or queue
-                if (Battles.BattleCommand.usersInBattleOrQueue.Any(u => u.Username == User.Username))
+                if (GameManager.IsPlayerBlocked(User.Username))
                 {
                     throw new Exception($"Player {User.Username} is already in a Battle Queue");
                 }

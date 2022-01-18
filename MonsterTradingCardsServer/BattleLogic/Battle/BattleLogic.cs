@@ -9,7 +9,7 @@ using MonsterTradingCards.Server.BattleLogic.Logger;
 
 namespace MonsterTradingCards.Server.BattleLogic.Battle
 {
-    internal class BattleLogic
+    class BattleLogic
     {
         public BattleLogic(ref BattleLogStringBuilder logBuilder)
         {
