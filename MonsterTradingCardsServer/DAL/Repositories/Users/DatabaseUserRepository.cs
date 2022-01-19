@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.DAL.Repositories.Users
 {
-    class DatabaseUserRepository : IUserRepository
+    class DatabaseUserRepository : DatabaseRepository, IUserRepository
     {
         private const string CreateTableCommand = "CREATE TABLE IF NOT EXISTS users (username VARCHAR PRIMARY KEY, password VARCHAR, token VARCHAR, elo INTEGER, gold INTEGER, " +
             "name VARCHAR, bio VARCHAR, image VARCHAR, matches_won INTEGER, matches_lost INTEGER, matches_draw INTEGER)";
@@ -28,106 +28,103 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
         private const string UpdateUserLosesCommand = "UPDATE users SET matches_lost = matches_lost + 1 WHERE username = @username";
         private const string UpdateUserDrawsCommand = "UPDATE users SET matches_draw = matches_draw + 1 WHERE username = @username";
 
-        private readonly NpgsqlConnection _connection;
-
-        public DatabaseUserRepository(NpgsqlConnection connection)
+        public DatabaseUserRepository(string connectionString)
         {
-            _connection = connection;
+            _connectionString = connectionString;
             EnsureTables();
         }
 
         public User GetUserByAuthToken(string authToken)
         {
             User user = null;
-            using (var cmd = new NpgsqlCommand(SelectUserByTokenCommand, _connection))
+            var conn = prepareConnection();
+            using (var cmd = new NpgsqlCommand(SelectUserByTokenCommand, conn))
             {
                 cmd.Parameters.AddWithValue("token", authToken);
 
                 // take the first row, if any
-                lock (Database.dbLock)
+                var reader = cmd.ExecuteReader();
+                if (reader.Read())
                 {
-                    var reader = cmd.ExecuteReader();
-                    if (reader.Read())
-                    {
-                        user = ReadUser(reader);
-                    }
-                    reader.Close();
+                    user = ReadUser(reader);
                 }
+                reader.Close();
             }
+            conn.Close();
             return user;
         }
 
         public User GetUserByCredentials(string username, string password)
         {
             User user = null;
-            using (var cmd = new NpgsqlCommand(SelectUserByCredentialsCommand, _connection))
+            var conn = prepareConnection();
+            using (var cmd = new NpgsqlCommand(SelectUserByCredentialsCommand, conn))
             {
                 cmd.Parameters.AddWithValue("username", username);
                 cmd.Parameters.AddWithValue("password", password);
 
                 // take the first row, if any
-                lock (Database.dbLock)
+                using var reader = cmd.ExecuteReader();
+                if (reader.Read())
                 {
-                    using var reader = cmd.ExecuteReader();
-                    if (reader.Read())
-                    {
-                        user = ReadUser(reader);
-                    }
-                    reader.Close();
+                    user = ReadUser(reader);
                 }
+                reader.Close();
+                
             }
+            conn.Close();
             return user;
         }
 
         public bool InsertUser(User user)
         {
             var affectedRows = 0;
+            var conn = prepareConnection();
             try
             {
-                using var cmd = new NpgsqlCommand(InsertUserCommand, _connection);
+                using var cmd = new NpgsqlCommand(InsertUserCommand, conn);
                 cmd.Parameters.AddWithValue("username", user.Username);
                 cmd.Parameters.AddWithValue("password", user.Password);
                 cmd.Parameters.AddWithValue("token", user.Token);
                 cmd.Parameters.AddWithValue("elo", user.Elo);
                 cmd.Parameters.AddWithValue("gold", user.Gold);
-                lock (Database.dbLock)
-                {
-                    affectedRows = cmd.ExecuteNonQuery();
-                }
+                affectedRows = cmd.ExecuteNonQuery();
             }
             catch (PostgresException)
             {
                 // this might happen, if the user already exists (constraint violation)
                 // we just catch it an keep affectedRows at zero
             }
+            conn.Close();
             return affectedRows > 0;
         }
 
         public bool AdjustUserGold(string username, int gold)
         {
             var affectedRows = 0;
+            var conn = prepareConnection();
             try
             {
-                using var cmd = new NpgsqlCommand(UpdateUserGoldCommand, _connection);
+                using var cmd = new NpgsqlCommand(UpdateUserGoldCommand, conn);
                 cmd.Parameters.AddWithValue("username", username);
                 cmd.Parameters.AddWithValue("amount", gold);
-                lock (Database.dbLock)
-                {
-                    affectedRows = cmd.ExecuteNonQuery();
-                }
+                affectedRows = cmd.ExecuteNonQuery();
             }
             catch (PostgresException)
             {
                 // this might happen, if the user already exists (constraint violation)
                 // we just catch it an keep affectedRows at zero
             }
+            conn.Close();
             return affectedRows > 0;
         }
 
         private void EnsureTables()
         {
-            using var cmd = new NpgsqlCommand(CreateTableCommand, _connection);
+            var conn = prepareConnection();
+            using var cmd = new NpgsqlCommand(CreateTableCommand, conn);
             cmd.ExecuteNonQuery();
+            conn.Close();
         }
 
         private User ReadUser(IDataRecord record)
@@ -144,135 +141,132 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
 
         public UserInfo GetUserInfo(string username)
         {
-            var cmd = new NpgsqlCommand(SelectUserInfoCommand, _connection);
+            var conn = prepareConnection();
+            var cmd = new NpgsqlCommand(SelectUserInfoCommand, conn);
             cmd.Parameters.AddWithValue("username", username);
-            lock (Database.dbLock)
+            
+            var reader = cmd.ExecuteReader();
+            var userInfo = new UserInfo() { Username = username };
+
+            if (reader.Read())
             {
-                var reader = cmd.ExecuteReader();
-                var userInfo = new UserInfo() { Username = username };
-
-                if (reader.Read())
-                {
-                    userInfo.Name = Convert.ToString(reader["name"]);
-                    userInfo.Bio = Convert.ToString(reader["bio"]);
-                    userInfo.Image = Convert.ToString(reader["image"]);
-                }
-                reader.Close();
-                return userInfo;
+                userInfo.Name = Convert.ToString(reader["name"]);
+                userInfo.Bio = Convert.ToString(reader["bio"]);
+                userInfo.Image = Convert.ToString(reader["image"]);
             }
-
+            reader.Close();
+            conn.Close();
+            return userInfo;
         }
 
         public bool UpdateUserInfo(UserInfo user)
         {
             int affected = 0;
+            var conn = prepareConnection();
             try
             {
-                var cmd = new NpgsqlCommand(UpdateUserInfoCommand, _connection);
+                var cmd = new NpgsqlCommand(UpdateUserInfoCommand, conn);
                 cmd.Parameters.AddWithValue("username", user.Username);
                 cmd.Parameters.AddWithValue("name", user.Name);
                 cmd.Parameters.AddWithValue("bio", user.Bio);
                 cmd.Parameters.AddWithValue("image", user.Image);
 
-                lock (Database.dbLock)
-                {
-                    affected = cmd.ExecuteNonQuery();
-                }
-            } catch (PostgresException)
+                affected = cmd.ExecuteNonQuery();
+            } 
+            catch (PostgresException)
             {
 
             }
+
+            conn.Close();
             return affected > 0;
         }
 
         public UserStats GetUserStats(string username)
         {
-            var cmd = new NpgsqlCommand(SelectUserStatsCommand, _connection);
+            var conn = prepareConnection();
+            var cmd = new NpgsqlCommand(SelectUserStatsCommand, conn);
             cmd.Parameters.AddWithValue("username", username);
 
-            lock (Database.dbLock)
+            var reader = cmd.ExecuteReader();
+            var userStats = new UserStats() { Username = username };
+
+            if (reader.Read())
             {
-                var reader = cmd.ExecuteReader();
-                var userStats = new UserStats() { Username = username };
-
-                if (reader.Read())
-                {
-                    userStats.Elo = Convert.ToInt32(reader["elo"]);
-                    userStats.MatchesWon = Convert.ToInt32(reader["matches_won"]);
-                    userStats.MatchesLost = Convert.ToInt32(reader["matches_lost"]);
-                    userStats.MatchesDraw = Convert.ToInt32(reader["matches_draw"]);
-                }
-                reader.Close();
-
-                return userStats;
+                userStats.Elo = Convert.ToInt32(reader["elo"]);
+                userStats.MatchesWon = Convert.ToInt32(reader["matches_won"]);
+                userStats.MatchesLost = Convert.ToInt32(reader["matches_lost"]);
+                userStats.MatchesDraw = Convert.ToInt32(reader["matches_draw"]);
             }
+            reader.Close();
+            conn.Close();
+            return userStats;
         }
 
         public Scoreboard GetScoreboard()
         {
-            var cmd = new NpgsqlCommand(SelectScoreboardCommand, _connection);
+            var conn = prepareConnection();
+            var cmd = new NpgsqlCommand(SelectScoreboardCommand, conn);
 
-            lock (Database.dbLock)
+            var reader = cmd.ExecuteReader();
+            var scoreboard = new Scoreboard();
+            scoreboard.entries = new List<ScoreboardEntry>();
+
+            while (reader.Read())
             {
-                var reader = cmd.ExecuteReader();
-                var scoreboard = new Scoreboard();
-                scoreboard.entries = new List<ScoreboardEntry>();
-
-                while (reader.Read())
+                scoreboard.entries.Add(new ScoreboardEntry()
                 {
-                    scoreboard.entries.Add(new ScoreboardEntry()
-                    {
-                        Username = Convert.ToString(reader["username"]),
-                        Elo = Convert.ToInt32(reader["elo"])
-                    });
-                }
-                reader.Close();
-
-                scoreboard.entries.Sort((x, y) => y.Elo.CompareTo(x.Elo));
-                return scoreboard;
+                    Username = Convert.ToString(reader["username"]),
+                    Elo = Convert.ToInt32(reader["elo"])
+                });
             }
+            reader.Close();
+
+            scoreboard.entries.Sort((x, y) => y.Elo.CompareTo(x.Elo));
+            conn.Close();
+            return scoreboard;
         }
 
         public bool AdjustUserElo(string username, int elo)
         {
             var affectedRows = 0;
+            var conn = prepareConnection();
             try
             {
-                using var cmd = new NpgsqlCommand(UpdateUserEloCommand, _connection);
+                using var cmd = new NpgsqlCommand(UpdateUserEloCommand, conn);
                 cmd.Parameters.AddWithValue("username", username);
                 cmd.Parameters.AddWithValue("amount", elo);
 
-                lock (Database.dbLock)
-                {
-                    affectedRows = cmd.ExecuteNonQuery();
-                }
+                affectedRows = cmd.ExecuteNonQuery();
             }
             catch (PostgresException)
             {
                 // this might happen, if the user already exists (constraint violation)
                 // we just catch it an keep affectedRows at zero
             }
+            conn.Close();
             return affectedRows > 0;
         }
 
         public bool AddToUserWinLoseStat(string username, WinLoseDrawColumns result)
         {
             var affectedRows = 0;
+            var conn = prepareConnection();
             try
             {
                 NpgsqlCommand cmd;
                 switch (result)
                 {
                     case WinLoseDrawColumns.WINNER:
-                        cmd = new NpgsqlCommand(UpdateUserWinsCommand, _connection);
+                        cmd = new NpgsqlCommand(UpdateUserWinsCommand, conn);
                         cmd.Parameters.AddWithValue("col", "matches_won");
                         break;
                     case WinLoseDrawColumns.LOSER:
-                        cmd = new NpgsqlCommand(UpdateUserLosesCommand, _connection);
+                        cmd = new NpgsqlCommand(UpdateUserLosesCommand, conn);
                         cmd.Parameters.AddWithValue("col", "matches_lost");
                         break;
                     case WinLoseDrawColumns.DRAW:
-                        cmd = new NpgsqlCommand(UpdateUserDrawsCommand, _connection);
+                        cmd = new NpgsqlCommand(UpdateUserDrawsCommand, conn);
                         cmd.Parameters.AddWithValue("col", "matches_draw");
                         break;
                     default:
@@ -281,16 +275,14 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Users
 
                 cmd.Parameters.AddWithValue("username", username);
 
-                lock (Database.dbLock)
-                {
-                    affectedRows = cmd.ExecuteNonQuery();
-                }
+                affectedRows = cmd.ExecuteNonQuery();
             }
             catch (PostgresException)
             {
                 // this might happen, if the user already exists (constraint violation)
                 // we just catch it an keep affectedRows at zero
             }
+            conn.Close();
             return affectedRows > 0;
         }
     }

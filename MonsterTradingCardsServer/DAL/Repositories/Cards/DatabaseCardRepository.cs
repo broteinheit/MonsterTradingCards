@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.DAL.Repositories.Cards
 {
-    internal class DatabaseCardRepository : ICardRepository
+    internal class DatabaseCardRepository : DatabaseRepository, ICardRepository
     {
         private const string CreateTableCommand = "CREATE TABLE IF NOT EXISTS cards (cardId VARCHAR PRIMARY KEY, cardName VARCHAR, damage DECIMAL, owner VARCHAR, " +
             "FOREIGN KEY (owner) REFERENCES users(username))";
@@ -18,42 +18,42 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Cards
         private const string SelectAllUserCards = "SELECT cardId, cardName, damage, owner FROM cards WHERE owner=@username";
         private const string UpdateCardCommand = "UPDATE cards SET owner=@newOwner WHERE cardId = @cardId";
 
-        private readonly NpgsqlConnection _connection;
-
-        public DatabaseCardRepository(NpgsqlConnection connection)
+        public DatabaseCardRepository(string connectionString)
         {
-            _connection = connection;
+            _connectionString = connectionString;
             EnsureTables();
         }
 
         private void EnsureTables()
         {
-            using var cmd = new NpgsqlCommand(CreateTableCommand, _connection);
+            var conn = prepareConnection();
+            using var cmd = new NpgsqlCommand(CreateTableCommand, conn);
             cmd.ExecuteNonQuery();
+            conn.Close();
         }
 
         public List<Card> GetAllUserCards(string Username)
         {
             List<Card> result = new List<Card>();
-            var cmd = new NpgsqlCommand(SelectAllUserCards, _connection);
+            var conn = prepareConnection();
+            var cmd = new NpgsqlCommand(SelectAllUserCards, conn);
             cmd.Parameters.AddWithValue("username", Username);
 
-            lock (Database.dbLock)
-            {
-                var reader = cmd.ExecuteReader();
+            
+            var reader = cmd.ExecuteReader();
 
-                while (reader.Read())
+            while (reader.Read())
+            {
+                result.Add(new Card()
                 {
-                    result.Add(new Card()
-                    {
-                        Id = reader.GetString(0),
-                        Name = reader.GetString(1),
-                        Damage = reader.GetDouble(2),
-                        OwnerUsername = reader.GetString(3),
-                    });
-                }
-                reader.Close();
+                    Id = reader.GetString(0),
+                    Name = reader.GetString(1),
+                    Damage = reader.GetDouble(2),
+                    OwnerUsername = reader.GetString(3),
+                });
             }
+            reader.Close();
+            conn.Close();
             return result;
         }
 
@@ -61,16 +61,15 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Cards
         {
             object[] values = new object[4];
 
-            var cmd = new NpgsqlCommand(SelectCardById, _connection);
+            var conn = prepareConnection();
+            var cmd = new NpgsqlCommand(SelectCardById, conn);
             cmd.Parameters.AddWithValue("cardId", cardId);
 
-            lock (Database.dbLock)
-            {
-                var res = cmd.ExecuteReader();
-                res.Read();
-                res.GetValues(values);
-                res.Close();
-            }
+            var res = cmd.ExecuteReader();
+            res.Read();
+            res.GetValues(values);
+            res.Close();
+            conn.Close();
 
             return new Card()
             {
@@ -84,46 +83,44 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Cards
         public bool InsertCard(Card card)
         {
             int affectedRows = 0;
+            var conn = prepareConnection();
             try
             {
-                using var cmd = new NpgsqlCommand(InsertCardCommand, _connection);
+                using var cmd = new NpgsqlCommand(InsertCardCommand, conn);
                 cmd.Parameters.AddWithValue("cardId", card.Id);
                 cmd.Parameters.AddWithValue("cardName", card.Name);
                 cmd.Parameters.AddWithValue("damage", card.Damage);
                 cmd.Parameters.Add(new NpgsqlParameter<string>("owner", card.OwnerUsername));
 
-                lock (Database.dbLock)
-                {
-                    affectedRows = cmd.ExecuteNonQuery();
-                }
+                affectedRows = cmd.ExecuteNonQuery();
             }
             catch (PostgresException)
             {
                 // this might happen, if the user already exists (constraint violation)
                 // we just catch it an keep affectedRows at zero
             }
+            conn.Close();
             return affectedRows > 0;
         }
 
         public bool ChangeCardOwner(Card card)
         {
             int affectedRows = 0;
+            var conn = prepareConnection();
             try
             {
-                using var cmd = new NpgsqlCommand(UpdateCardCommand, _connection);
+                using var cmd = new NpgsqlCommand(UpdateCardCommand, conn);
                 cmd.Parameters.AddWithValue("cardId", card.Id);
                 cmd.Parameters.Add(new NpgsqlParameter<string>("newOwner", card.OwnerUsername));
-
-                lock (Database.dbLock)
-                {
-                    affectedRows = cmd.ExecuteNonQuery();
-                }
+                
+                affectedRows = cmd.ExecuteNonQuery();
             }
             catch (PostgresException)
             {
                 // this might happen, if the user already exists (constraint violation)
                 // we just catch it an keep affectedRows at zero
             }
+            conn.Close();
             return affectedRows > 0;
         }
     }

@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.DAL.Repositories.Tradings
 {
-    internal class DatabaseTradingsRepository : ITradingsRepository
+    internal class DatabaseTradingsRepository : DatabaseRepository, ITradingsRepository
     {
         private const string CreateTableCommand = "CREATE TABLE IF NOT EXISTS tradings (id VARCHAR PRIMARY KEY, username VARCHAR, cardToTradeId VARCHAR, cardtype VARCHAR, minDamage DECIMAL," +
             "CONSTRAINT fk_cardToTrade FOREIGN KEY (cardToTradeId) REFERENCES cards(cardId), CONSTRAINT fk_username FOREIGN KEY (username) REFERENCES users(username))";
@@ -23,11 +23,9 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Tradings
         private const string SelectTradingById = "SELECT username, cardToTradeId, cardtype, minDamage FROM tradings WHERE id=@id";
         private const string DeleteTradings = "DELETE FROM tradings WHERE id=@id";
 
-        private readonly NpgsqlConnection _connection;
-
-        public DatabaseTradingsRepository(NpgsqlConnection connection)
+        public DatabaseTradingsRepository(string connectionString)
         {
-            _connection = connection;
+            _connectionString = connectionString;
             EnsureTables();
         }
 
@@ -51,76 +49,76 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Tradings
             }
 
             int affectedRows = 0;
+            var conn = prepareConnection();
             try
             {
-                using var cmd = new NpgsqlCommand(InsertTradingCommand, _connection);
+                using var cmd = new NpgsqlCommand(InsertTradingCommand, conn);
                 cmd.Parameters.AddWithValue("id", trade.Id);
                 cmd.Parameters.AddWithValue("username", trade.Username);
                 cmd.Parameters.AddWithValue("cardToTradeId", trade.CardToTradeId);
                 cmd.Parameters.AddWithValue("cardtype", cardtype);
                 cmd.Parameters.AddWithValue("minDamage", trade.MinDamage);
 
-                lock (Database.dbLock)
-                {
-                    affectedRows = cmd.ExecuteNonQuery();
-                }
+                
+                affectedRows = cmd.ExecuteNonQuery();
+                
             }
             catch (PostgresException)
             {
                 // this might happen, if the user already exists (constraint violation)
                 // we just catch it an keep affectedRows at zero
             }
+            conn.Close();
             return affectedRows > 0;
         }
 
         public bool DeleteTrade(string tradeId)
         {
             int affectedRows = 0;
+            var conn = prepareConnection();
             try
             {
-                lock (Database.dbLock)
-                {
-                    using var cmd = new NpgsqlCommand(DeleteTradings, _connection);
-                    cmd.Parameters.AddWithValue("id", tradeId);
-                    affectedRows = cmd.ExecuteNonQuery();
-                }
+                using var cmd = new NpgsqlCommand(DeleteTradings, conn);
+                cmd.Parameters.AddWithValue("id", tradeId);
+                affectedRows = cmd.ExecuteNonQuery();
             }
             catch (PostgresException)
             {
                 // this might happen, if the user already exists (constraint violation)
                 // we just catch it an keep affectedRows at zero
             }
+            conn.Close();
             return affectedRows > 0;
         }
 
         public List<Trade> GetAllTrades()
         {
             var tradeList = new List<Trade>();
-            var cmd = new NpgsqlCommand(SelectAllTradings, _connection);
+            var conn = prepareConnection();
+            var cmd = new NpgsqlCommand(SelectAllTradings, conn);
 
-            lock (Database.dbLock)
+            
+            var res = cmd.ExecuteReader();
+
+            if (!res.HasRows)
             {
-                var res = cmd.ExecuteReader();
-
-                if (!res.HasRows)
-                {
-                    res.Close();
-                    return new List<Trade>();
-                }
-
-                while (res.Read())
-                {
-                    tradeList.Add(new Trade()
-                    {
-                        Id = Convert.ToString(res["id"]),
-                        Username = null,
-                        CardToTradeId = Convert.ToString(res["cardToTradeId"]),
-                        TypeToTrade = ConvertToTradeCardTypeFromString((string)res["cardtype"]),
-                        MinDamage = Convert.ToDouble(res["minDamage"])
-                    });
-                }
                 res.Close();
+                return new List<Trade>();
             }
+
+            while (res.Read())
+            {
+                tradeList.Add(new Trade()
+                {
+                    Id = Convert.ToString(res["id"]),
+                    Username = null,
+                    CardToTradeId = Convert.ToString(res["cardToTradeId"]),
+                    TypeToTrade = ConvertToTradeCardTypeFromString((string)res["cardtype"]),
+                    MinDamage = Convert.ToDouble(res["minDamage"])
+                });
+            }
+            res.Close();
+            conn.Close();
 
             return tradeList;
         }
@@ -130,16 +128,15 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Tradings
             //get trade
             object[] values = new object[4];
 
-            var cmd = new NpgsqlCommand(SelectTradingById, _connection);
+            var conn = prepareConnection();
+            var cmd = new NpgsqlCommand(SelectTradingById, conn);
             cmd.Parameters.AddWithValue("id", tradeId);
 
-            lock (Database.dbLock)
-            {
-                var res = cmd.ExecuteReader();
-                res.Read();
-                res.GetValues(values);
-                res.Close();
-            }
+            var res = cmd.ExecuteReader();
+            res.Read();
+            res.GetValues(values);
+            res.Close();
+            conn.Close();
 
             return new Trade()
             {
@@ -153,8 +150,10 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Tradings
 
         private void EnsureTables()
         {
-            using var cmd = new NpgsqlCommand(CreateTableCommand, _connection);
+            var conn = prepareConnection();
+            using var cmd = new NpgsqlCommand(CreateTableCommand, conn);
             cmd.ExecuteNonQuery();
+            conn.Close();
         }
 
         private TradeCardType ConvertToTradeCardTypeFromString(string str)

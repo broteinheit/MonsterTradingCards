@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.DAL.Repositories.Deck
 {
-    internal class DatabaseDeckRepository : IDeckRepository
+    internal class DatabaseDeckRepository : DatabaseRepository, IDeckRepository
     {
         private const string CreateTableCommand = "CREATE TABLE IF NOT EXISTS decks (ownerId VARCHAR PRIMARY KEY, cardIdOne VARCHAR, cardIdTwo VARCHAR, cardIdThree VARCHAR, " +
             "cardIdFour VARCHAR, FOREIGN KEY (ownerId) REFERENCES users(username), FOREIGN KEY (cardIdOne) REFERENCES cards(cardId), " +
@@ -19,41 +19,40 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Deck
         private const string SelectDeckByOwnerId = "SELECT cardIdOne, cardIdTwo, cardIdThree, cardIdFour FROM decks WHERE ownerId=@ownerId";
         private const string UpdateDeckCommand = "UPDATE decks SET cardIdOne=@cardOne, cardIdTwo=@cardTwo, cardIdThree=@cardThree, cardIdFour=@cardFour WHERE ownerId = @ownerId";
 
-        private readonly NpgsqlConnection _connection;
-
-        public DatabaseDeckRepository(NpgsqlConnection connection)
+        public DatabaseDeckRepository(string connectionString)
         {
-            _connection = connection;
+            _connectionString = connectionString;
             EnsureTables();
         }
 
         private void EnsureTables()
         {
-            using var cmd = new NpgsqlCommand(CreateTableCommand, _connection);
+            var conn = prepareConnection();
+            using var cmd = new NpgsqlCommand(CreateTableCommand, conn);
             cmd.ExecuteNonQuery();
+            conn.Close();
         }
 
         public Models.Deck GetDeck(string username)
         {
             string[] values = new string[4];
 
-            var cmd = new NpgsqlCommand(SelectDeckByOwnerId, _connection);
+            var conn = prepareConnection();
+            var cmd = new NpgsqlCommand(SelectDeckByOwnerId, conn);
             cmd.Parameters.AddWithValue("ownerId", username);
+            var res = cmd.ExecuteReader();
 
-            lock (Database.dbLock)
+            if (!res.HasRows)
             {
-                var res = cmd.ExecuteReader();
-
-                if (!res.HasRows)
-                {
-                    res.Close();
-                    return new Models.Deck();
-                }
-
-                res.Read();
-                res.GetValues(values);
                 res.Close();
+                return new Models.Deck();
             }
+
+            res.Read();
+            res.GetValues(values);
+            res.Close();
+
+            conn.Close();
 
             return new Models.Deck() 
             { 
@@ -74,35 +73,32 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Deck
             }
 
             int affectedRows = 0;
+            var conn = prepareConnection();
             try
             {
                 if (GetDeck(deck.owner).owner == null)
                 {
-                    using var cmd = new NpgsqlCommand(InsertDeckCommand, _connection);
+                    using var cmd = new NpgsqlCommand(InsertDeckCommand, conn);
                     cmd.Parameters.AddWithValue("ownerId", deck.owner);
                     cmd.Parameters.AddWithValue("cardOne", deck.cardIds[0]);
                     cmd.Parameters.AddWithValue("cardTwo", deck.cardIds[1]);
                     cmd.Parameters.AddWithValue("cardThree", deck.cardIds[2]);
                     cmd.Parameters.AddWithValue("cardFour", deck.cardIds[3]);
 
-                    lock (Database.dbLock)
-                    {
-                        affectedRows = cmd.ExecuteNonQuery();
-                    }
+                    
+                    affectedRows = cmd.ExecuteNonQuery();
+                    
                 }
                 else
                 {
-                    using var cmd = new NpgsqlCommand(UpdateDeckCommand, _connection);
+                    using var cmd = new NpgsqlCommand(UpdateDeckCommand, conn);
                     cmd.Parameters.AddWithValue("ownerId", deck.owner);
                     cmd.Parameters.AddWithValue("cardOne", deck.cardIds[0]);
                     cmd.Parameters.AddWithValue("cardTwo", deck.cardIds[1]);
                     cmd.Parameters.AddWithValue("cardThree", deck.cardIds[2]);
                     cmd.Parameters.AddWithValue("cardFour", deck.cardIds[3]);
 
-                    lock (Database.dbLock)
-                    {
-                        affectedRows = cmd.ExecuteNonQuery();
-                    }
+                    affectedRows = cmd.ExecuteNonQuery();
                 }
             }
             catch (PostgresException)
@@ -110,6 +106,7 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Deck
                 // this might happen, if the user already exists (constraint violation)
                 // we just catch it an keep affectedRows at zero
             }
+            conn.Close();
             return affectedRows > 0;
         }
     }

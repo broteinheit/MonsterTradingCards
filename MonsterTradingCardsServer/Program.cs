@@ -24,7 +24,7 @@ namespace MonsterTradingCards.Server
     {
         static void Main(string[] args)
         {
-            var db = new Database("Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=monster_trading_cards");
+            var db = new Database("Host=localhost;Port=5432;Username=postgres;Password=postgres;Database=monster_trading_cards;");
 
             var userManager = new UserManager(db.UserRepository);
             var cardManager = new CardManager(db.CardRepository);
@@ -37,7 +37,7 @@ namespace MonsterTradingCards.Server
             var identityProvider = new UserIdentityProvider(db.UserRepository);
             var routeParser = new RouteParser();
 
-            
+
 
             var router = new Router(routeParser, identityProvider);
             RegisterRoutes(router, userManager, cardManager, packageManager, deckManager, tradingsManager, gameManager);

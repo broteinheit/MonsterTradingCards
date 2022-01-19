@@ -14,8 +14,6 @@ namespace MonsterTradingCards.Server.DAL
 {
     class Database
     {
-        private readonly NpgsqlConnection _connection;
-
         public IUserRepository UserRepository { get; private set; }
         public ICardRepository CardRepository { get; private set; }
         public IPackageRepository PackageRepository { get; private set; }
@@ -27,20 +25,14 @@ namespace MonsterTradingCards.Server.DAL
         {
             try
             {
-                _connection = new NpgsqlConnection(connectionString);
-                _connection.Open();
-
-                // first users, then messages
-                // we need this special order since messages has a foreign key to users
-                UserRepository = new DatabaseUserRepository(_connection);
-                CardRepository = new DatabaseCardRepository(_connection);
-                PackageRepository = new DatabasePackageRepository(_connection);
-                DeckRepository = new DatabaseDeckRepository(_connection);
-                TradingsRepository = new DatabaseTradingsRepository(_connection);
+                UserRepository = new DatabaseUserRepository(connectionString);
+                CardRepository = new DatabaseCardRepository(connectionString);
+                PackageRepository = new DatabasePackageRepository(connectionString);
+                DeckRepository = new DatabaseDeckRepository(connectionString);
+                TradingsRepository = new DatabaseTradingsRepository(connectionString);
             }
             catch (NpgsqlException e)
             {
-                // provide our own custom exception
                 throw new DataAccessFailedException("Could not connect to or initialize database", e);
             }
         }
