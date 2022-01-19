@@ -12,6 +12,7 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Cards
         bool InsertCard(Card card);
         Card GetCardById(string cardId);
         List<Card> GetAllUserCards(string Username);
-        bool ChangeCardOwner(Card card);
+        bool UpdateCard(Card card);
+        bool DeleteCard(Card card);
     }
 }

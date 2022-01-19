@@ -16,7 +16,8 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Cards
         private const string InsertCardCommand = "INSERT INTO cards(cardId, cardName, damage, owner) VALUES (@cardId, @cardName, @damage, @owner)";
         private const string SelectCardById = "SELECT cardId, cardName, damage, owner FROM cards WHERE cardId=@cardId";
         private const string SelectAllUserCards = "SELECT cardId, cardName, damage, owner FROM cards WHERE owner=@username";
-        private const string UpdateCardCommand = "UPDATE cards SET owner=@newOwner WHERE cardId = @cardId";
+        private const string UpdateCardCommand = "UPDATE cards SET cardName=@cardName, damage=@damage, owner=@newOwner WHERE cardId = @cardId";
+        private const string DeleteCardCommand = "DELETE FROM cards WHERE cardId=@cardId";
 
         private readonly NpgsqlConnection _connection;
 
@@ -105,14 +106,37 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Cards
             return affectedRows > 0;
         }
 
-        public bool ChangeCardOwner(Card card)
+        public bool UpdateCard(Card card)
         {
             int affectedRows = 0;
             try
             {
                 using var cmd = new NpgsqlCommand(UpdateCardCommand, _connection);
                 cmd.Parameters.AddWithValue("cardId", card.Id);
+                cmd.Parameters.AddWithValue("cardName", card.Name);
+                cmd.Parameters.AddWithValue("damage", card.Damage);
                 cmd.Parameters.Add(new NpgsqlParameter<string>("newOwner", card.OwnerUsername));
+
+                lock (Database.dbLock)
+                {
+                    affectedRows = cmd.ExecuteNonQuery();
+                }
+            }
+            catch (PostgresException)
+            {
+                // this might happen, if the user already exists (constraint violation)
+                // we just catch it an keep affectedRows at zero
+            }
+            return affectedRows > 0;
+        }
+
+        public bool DeleteCard(Card card)
+        {
+            int affectedRows = 0;
+            try
+            {
+                using var cmd = new NpgsqlCommand(DeleteCardCommand, _connection);
+                cmd.Parameters.AddWithValue("cardId", card.Id);
 
                 lock (Database.dbLock)
                 {

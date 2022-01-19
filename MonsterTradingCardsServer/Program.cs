@@ -17,6 +17,7 @@ using MonsterTradingCards.Server.RouteCommands.Tradings;
 using System.Collections.Generic;
 using MonsterTradingCards.Server.Managers;
 using MonsterTradingCards.Server.BattleLogic.Battle;
+using MonsterTradingCards.Server.RouteCommands.Sacrifice;
 
 namespace MonsterTradingCards.Server
 {
@@ -78,6 +79,9 @@ namespace MonsterTradingCards.Server
             router.AddProtectedRoute(HttpMethod.Post, "/tradings", (r, p) => new CreateTradingDealCommand(tradingsManager, Deserialize<TradeSerializedObject>(r.Payload)));
             router.AddProtectedRoute(HttpMethod.Delete, "/tradings/{tradeId}", (r, p) => new DeleteTradingDealCommand(tradingsManager, p["tradeId"]));
             router.AddProtectedRoute(HttpMethod.Post, "/tradings/{tradeId}", (r, p) => new TradeCommand(tradingsManager, p["tradeId"], Deserialize<string>(r.Payload)));
+
+            //unique feature
+            router.AddProtectedRoute(HttpMethod.Post, "/sacrifice", (r, p) => new SacrificeCommand(cardManager, deckManager, Deserialize<SacrificeModel>(r.Payload)));
         }
 
         private static T Deserialize<T>(string payload) where T : class

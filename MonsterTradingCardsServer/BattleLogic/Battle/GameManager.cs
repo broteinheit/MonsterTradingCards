@@ -68,7 +68,12 @@ namespace MonsterTradingCards.Server.BattleLogic.Battle
             {
                 if (usersInQueue.Count >= 2)
                 {
-                    BattleHandler battle = new BattleHandler(usersInQueue.Dequeue(), usersInQueue.Dequeue(), deckManager, cardManager);
+                    User p1;
+                    User p2;
+                    usersInQueue.TryDequeue(out p1);
+                    usersInQueue.TryDequeue(out p2);
+
+                    BattleHandler battle = new BattleHandler(p1, p2, deckManager, cardManager);
                     battles[battle.player1] = battle;
                     battles[battle.player2] = battle;
                     Task.Run(battle.StartBattle);
@@ -112,7 +117,7 @@ namespace MonsterTradingCards.Server.BattleLogic.Battle
 
 
         private ConcurrentDictionary<User, BattleHandler> battles = new ConcurrentDictionary<User, BattleHandler>();
-        private Queue<User> usersInQueue = new Queue<User>();
+        private ConcurrentQueue<User> usersInQueue = new ConcurrentQueue<User>();
         private ICardManager cardManager;
         private IDeckManager deckManager;
         private IUserManager userManager;

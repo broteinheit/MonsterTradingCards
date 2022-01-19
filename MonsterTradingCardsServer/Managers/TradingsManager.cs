@@ -69,9 +69,9 @@ namespace MonsterTradingCards.Server.Managers
             providerCard.OwnerUsername = tradeinUsername;
             tradeInCard.OwnerUsername = providerUsername;
             //change owner trade provider card
-            cardRepository.ChangeCardOwner(providerCard);
+            cardRepository.UpdateCard(providerCard);
             //change owner trade-in card
-            cardRepository.ChangeCardOwner(tradeInCard);
+            cardRepository.UpdateCard(tradeInCard);
         }
 
         public void CreateTradeOffer(string id, string username, string cardId, string wantedType, double minDamage)

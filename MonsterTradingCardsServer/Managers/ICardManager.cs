@@ -13,5 +13,6 @@ namespace MonsterTradingCards.Server.Managers
         Card GetCard(string cardId);
         string GetAllCardsJSON(string username);
         void ChangeOwner(Card card, string newOwner);
+        public Card SacrificeCard(Card sacrifice, Card reciever);
     }
 }
