@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.DAL.Repositories.Cards
 {
-    internal class DatabaseCardRepository : ICardRepository
+    public class DatabaseCardRepository : ICardRepository
     {
         private const string CreateTableCommand = "CREATE TABLE IF NOT EXISTS cards (cardId VARCHAR PRIMARY KEY, cardName VARCHAR, damage DECIMAL, owner VARCHAR, " +
             "FOREIGN KEY (owner) REFERENCES users(username))";

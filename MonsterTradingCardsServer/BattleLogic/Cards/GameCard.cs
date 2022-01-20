@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.BattleLogic.Cards
 {
-    class GameCard
+    public class GameCard
     {
         public string GetCardName()
         {

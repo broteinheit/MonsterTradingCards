@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.Managers
 {
-    internal class DeckManager : IDeckManager
+    public class DeckManager : IDeckManager
     {
         private readonly IDeckRepository deckRepository;
 

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.DAL.Repositories.Package
 {
-    internal class DatabasePackageRepository : IPackageRepository
+    public class DatabasePackageRepository : IPackageRepository
     {
         private const string CreateTableCommand = "CREATE TABLE IF NOT EXISTS packages (cardOneId VARCHAR, cardTwoId VARCHAR, cardThreeId VARCHAR, cardFourId VARCHAR, cardFiveId VARCHAR, " +
             "CONSTRAINT pk PRIMARY KEY (cardOneId, cardTwoId, cardThreeId, cardFourId, cardFiveId), " +

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.RouteCommands.Scoreboard
 {
-    internal class ScoreboardCommand : ProtectedRouteCommand
+    public class ScoreboardCommand : ProtectedRouteCommand
     {
         private readonly IUserManager userManager;
 
@@ -31,7 +31,7 @@ namespace MonsterTradingCards.Server.RouteCommands.Scoreboard
             }
             catch (Exception ex)
             {
-                response.StatusCode = StatusCode.InternalServerError;
+                response.StatusCode = StatusCode.publicServerError;
                 response.Payload = ex.Message;
             }
 

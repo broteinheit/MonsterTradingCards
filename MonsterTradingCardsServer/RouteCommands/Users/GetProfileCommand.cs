@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.RouteCommands.Users
 {
-    internal class GetProfileCommand : ProtectedRouteCommand
+    public class GetProfileCommand : ProtectedRouteCommand
     {
         private string username;
         private readonly IUserManager userManager;

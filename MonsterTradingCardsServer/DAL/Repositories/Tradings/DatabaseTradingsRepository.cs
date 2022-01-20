@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.DAL.Repositories.Tradings
 {
-    internal class DatabaseTradingsRepository : ITradingsRepository
+    public class DatabaseTradingsRepository : ITradingsRepository
     {
         private const string CreateTableCommand = "CREATE TABLE IF NOT EXISTS tradings (id VARCHAR PRIMARY KEY, username VARCHAR, cardToTradeId VARCHAR, cardtype VARCHAR, minDamage DECIMAL," +
             "CONSTRAINT fk_cardToTrade FOREIGN KEY (cardToTradeId) REFERENCES cards(cardId), CONSTRAINT fk_username FOREIGN KEY (username) REFERENCES users(username))";

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.RouteCommands.Packages
 {
-    internal class AcquirePackageCommand : ProtectedRouteCommand
+    public class AcquirePackageCommand : ProtectedRouteCommand
     {
         private readonly ICardManager cardManager;
         private readonly IPackageManager packageManager;

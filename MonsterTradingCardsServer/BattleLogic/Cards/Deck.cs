@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.BattleLogic.Cards
 {
-    internal class Deck
+    public class Deck
     {
         public Deck(Models.Deck dbDeck, ICardManager cardManager)
         {

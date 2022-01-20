@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.BattleLogic.Cards.CardType
 {
-    internal interface ICardType : IType
+    public interface ICardType : IType
     {
         //returns multiplier for specialty as defined in specifications
         //int because it either loses or nothing changes (0, 1)

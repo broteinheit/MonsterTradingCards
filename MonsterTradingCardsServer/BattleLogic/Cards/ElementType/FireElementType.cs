@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.BattleLogic.Cards.ElementType
 {
-    internal class FireElementType : IElementType
+    public class FireElementType : IElementType
     {
         public string GetTypeName()
         {

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.RouteCommands.Tradings
 {
-    internal class CreateTradingDealCommand : ProtectedRouteCommand
+    public class CreateTradingDealCommand : ProtectedRouteCommand
     {
         private readonly ITradingsManager tradingsManager;
         private TradeSerializedObject trade;

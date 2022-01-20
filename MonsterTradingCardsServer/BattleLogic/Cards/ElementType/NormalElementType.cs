@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.BattleLogic.Cards.ElementType
 {
-    internal class NormalElementType : IElementType
+    public class NormalElementType : IElementType
     {
         public string GetTypeName()
         {

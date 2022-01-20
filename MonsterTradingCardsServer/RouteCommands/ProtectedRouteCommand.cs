@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.RouteCommands
 {
-    abstract class ProtectedRouteCommand : IProtectedRouteCommand
+    public abstract class ProtectedRouteCommand : IProtectedRouteCommand
     {
         public IIdentity Identity { get; set; }
 
