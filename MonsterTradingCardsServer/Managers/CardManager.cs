@@ -53,19 +53,19 @@ namespace MonsterTradingCards.Server.Managers
             }
         }
 
-        public Card SacrificeCard(Card sacrifice, Card reciever)
+        public Card SacrificeCard(Card sacrifice, Card receiver)
         {
-            if (sacrifice.Damage < 1.5 * reciever.Damage)
+            if (sacrifice.Damage < 1.5 * receiver.Damage)
             {
                 throw new Exception($"Sacrifice-Card must have at least 50% more damage than Receiver-Card! " +
-                    $"(Sacrifice: {sacrifice.Damage}, Receiver: {reciever.Damage})");
+                    $"(Sacrifice: {sacrifice.Damage}, Receiver: {receiver.Damage})");
             }
 
             //add 1/4th of sacrifice card's damage to receiver;
-            reciever.Damage += Math.Floor(sacrifice.Damage * 0.25);
+            receiver.Damage += Math.Floor(sacrifice.Damage * 0.25);
 
             //update reciever
-            if (!cardRepository.UpdateCard(reciever))
+            if (!cardRepository.UpdateCard(receiver))
             {
                 throw new Exception("Receiver-Card could not be updated!");
             }
@@ -76,7 +76,7 @@ namespace MonsterTradingCards.Server.Managers
                 throw new Exception("Could not delete Sacrifice-Card!");
             }
 
-            return reciever;
+            return receiver;
         }
     }
 }

@@ -9,6 +9,6 @@ namespace MonsterTradingCards.Server.Models
     public class SacrificeModel
     {
         public string Sacrifice { get; set; }
-        public string Reciever { get; set; }
+        public string Receiver { get; set; }
     }
 }

@@ -23,7 +23,7 @@ namespace MonsterTradingCards.Server.RouteCommands.Sacrifice
             this.cardManager = cardManager;
             this.deckManager = deckManager;
             sacrifice = cardManager.GetCard(sacrificeModel.Sacrifice);
-            receiver = cardManager.GetCard(sacrificeModel.Reciever);
+            receiver = cardManager.GetCard(sacrificeModel.Receiver);
         }
 
         public override Response Execute()
