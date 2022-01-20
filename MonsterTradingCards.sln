@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonsterTradingCards.Server"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MonsterTradingCards.Server.Core", "MonsterTradingCardsServer.Core\MonsterTradingCards.Server.Core.csproj", "{5EAB8F05-664D-49A4-9B8B-17BA140633E3}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MonsterTradingCards.Server.Test", "MonsterTradingCards.Server.Test\MonsterTradingCards.Server.Test.csproj", "{671474D8-2F0C-47DD-8B7C-73D165985315}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{5EAB8F05-664D-49A4-9B8B-17BA140633E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5EAB8F05-664D-49A4-9B8B-17BA140633E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5EAB8F05-664D-49A4-9B8B-17BA140633E3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{671474D8-2F0C-47DD-8B7C-73D165985315}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{671474D8-2F0C-47DD-8B7C-73D165985315}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{671474D8-2F0C-47DD-8B7C-73D165985315}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{671474D8-2F0C-47DD-8B7C-73D165985315}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

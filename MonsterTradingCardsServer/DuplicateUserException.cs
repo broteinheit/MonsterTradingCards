@@ -3,7 +3,7 @@ using System.Runtime.Serialization;
 
 namespace MonsterTradingCards.Server
 {
-    internal class DuplicateUserException : Exception
+    public class DuplicateUserException : Exception
     {
         public DuplicateUserException()
         {
