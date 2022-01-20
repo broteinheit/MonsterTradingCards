@@ -27,6 +27,11 @@ namespace MonsterTradingCards.Server.RouteCommands.Packages
             var response = new Response();
             try
             {
+                if (package.Cards.Count != 5)
+                {
+                    throw new Exception($"Card Packages need to contain 5 cards (given: {package.Cards.Count})");
+                }
+
                 foreach (var card in package.Cards)
                 {
                     cardManager.AddCard(card);

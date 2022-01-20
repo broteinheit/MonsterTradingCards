@@ -15,6 +15,12 @@ echo.
 curl -X POST http://localhost:10001/users --header "Content-Type: application/json" -d "{\"Username\":\"test\", \"Password\":\"test\"}"
 echo.
 curl -X POST http://localhost:10001/users --header "Content-Type: application/json" -d "{\"Username\":\"admin\", \"Password\":\"istrator\"}"
+echo.
+echo should fail:
+curl -X POST http://localhost:10001/users --header "Content-Type: application/json" -d "{\"Username\":\"manuel\", \"Password\":\"eiwen\"}"
+echo.
+curl -X POST http://localhost:10001/users --header "Content-Type: application/json" -d "{\"Username\":\"test\", \"Password\":\"test\"}"
+echo.
 
 REM --------------------------------------------------
 echo 2) Login Users
@@ -23,6 +29,11 @@ echo.
 curl -X POST http://localhost:10001/sessions --header "Content-Type: application/json" -d "{\"Username\":\"test\", \"Password\":\"test\"}"
 echo.
 curl -X POST http://localhost:10001/sessions --header "Content-Type: application/json" -d "{\"Username\":\"admin\", \"Password\":\"istrator\"}"
+echo.
+echo should fail:
+curl -X POST http://localhost:10001/sessions --header "Content-Type: application/json" -d "{\"Username\":\"manuel\", \"Password\":\"test\"}"
+echo.
+curl -X POST http://localhost:10001/sessions --header "Content-Type: application/json" -d "{\"Username\":\"test\", \"Password\":\"eiwen\"}"
 echo.
 
 REM --------------------------------------------------
@@ -34,6 +45,11 @@ echo.
 curl -X POST http://localhost:10001/packages --header "Content-Type: application/json" --header "Authorization: Basic admin-mtcgToken" -d "[{\"Id\":\"b017ee50-1c14-44e2-bfd6-2c0c5653a37c\", \"Name\":\"WaterGoblin\", \"Damage\": 11.0}, {\"Id\":\"d04b736a-e874-4137-b191-638e0ff3b4e7\", \"Name\":\"Dragon\", \"Damage\": 70.0}, {\"Id\":\"88221cfe-1f84-41b9-8152-8e36c6a354de\", \"Name\":\"WaterSpell\", \"Damage\": 22.0}, {\"Id\":\"1d3f175b-c067-4359-989d-96562bfa382c\", \"Name\":\"Ork\", \"Damage\": 40.0}, {\"Id\":\"171f6076-4eb5-4a7d-b3f2-2d650cc3d237\", \"Name\":\"RegularSpell\", \"Damage\": 28.0}]"
 echo.																																																																																		 				    
 curl -X POST http://localhost:10001/packages --header "Content-Type: application/json" --header "Authorization: Basic admin-mtcgToken" -d "[{\"Id\":\"ed1dc1bc-f0aa-4a0c-8d43-1402189b33c8\", \"Name\":\"WaterGoblin\", \"Damage\": 10.0}, {\"Id\":\"65ff5f23-1e70-4b79-b3bd-f6eb679dd3b5\", \"Name\":\"Dragon\", \"Damage\": 50.0}, {\"Id\":\"55ef46c4-016c-4168-bc43-6b9b1e86414f\", \"Name\":\"WaterSpell\", \"Damage\": 20.0}, {\"Id\":\"f3fad0f2-a1af-45df-b80d-2e48825773d9\", \"Name\":\"Ork\", \"Damage\": 45.0}, {\"Id\":\"8c20639d-6400-4534-bd0f-ae563f11f57a\", \"Name\":\"WaterSpell\",   \"Damage\": 25.0}]"
+echo.
+echo should fail:
+curl -X POST http://localhost:10001/packages --header "Content-Type: application/json" --header "Authorization: Basic admin-mtcgToken" -d "[{\"Id\":\"a\", \"Name\":\"WaterGoblin\", \"Damage\": 11.0}, {\"Id\":\"s\", \"Name\":\"Dragon\", \"Damage\": 70.0}, {\"Id\":\"d\", \"Name\":\"WaterSpell\", \"Damage\": 22.0}, {\"Id\":\"f\", \"Name\":\"RegularSpell\", \"Damage\": 28.0}]"
+echo.																																																																																		 				    
+curl -X POST http://localhost:10001/packages --header "Content-Type: application/json" --header "Authorization: Basic admin-mtcgToken" -d "[]"
 echo.
 
 REM --------------------------------------------------
