@@ -85,14 +85,14 @@ ping localhost -n 10 >NUL 2>NUL
 REM --------------------------------------------------
 echo 7) sacrifice to make other card stronger
 echo should fail:
-curl -X POST http://localhost:10001/sacrifice --header "Content-Type: application/json" --header "Authorization: Basic manuel-mtcgToken" -d "{\"Sacrifice\":\"99f8f8dc-e25e-4a95-aa2c-782823f36e2a\", \"Reciever\":\"e85e3976-7c86-4d06-9a80-641c2019a79f\"}"
+curl -X POST http://localhost:10001/sacrifice --header "Content-Type: application/json" --header "Authorization: Basic manuel-mtcgToken" -d "{\"Sacrifice\":\"99f8f8dc-e25e-4a95-aa2c-782823f36e2a\", \"Receiver\":\"e85e3976-7c86-4d06-9a80-641c2019a79f\"}"
 echo.
-curl -X POST http://localhost:10001/sacrifice --header "Content-Type: application/json" --header "Authorization: Basic manuel-mtcgToken" -d "{\"Sacrifice\":\"644808c2-f87a-4600-b313-122b02322fd5\", \"Reciever\":\"e85e3976-7c86-4d06-9a80-641c2019a79f\"}"
+curl -X POST http://localhost:10001/sacrifice --header "Content-Type: application/json" --header "Authorization: Basic manuel-mtcgToken" -d "{\"Sacrifice\":\"644808c2-f87a-4600-b313-122b02322fd5\", \"Receiver\":\"e85e3976-7c86-4d06-9a80-641c2019a79f\"}"
 echo.
 echo should work:
-curl -X POST http://localhost:10001/sacrifice --header "Content-Type: application/json" --header "Authorization: Basic manuel-mtcgToken" -d "{\"Sacrifice\":\"1cb6ab86-bdb2-47e5-b6e4-68c5ab389334\", \"Reciever\":\"e85e3976-7c86-4d06-9a80-641c2019a79f\"}"
+curl -X POST http://localhost:10001/sacrifice --header "Content-Type: application/json" --header "Authorization: Basic manuel-mtcgToken" -d "{\"Sacrifice\":\"1cb6ab86-bdb2-47e5-b6e4-68c5ab389334\", \"Receiver\":\"e85e3976-7c86-4d06-9a80-641c2019a79f\"}"
 echo.
-curl -X POST http://localhost:10001/sacrifice --header "Content-Type: application/json" --header "Authorization: Basic manuel-mtcgToken" -d "{\"Sacrifice\":\"4a2757d6-b1c3-47ac-b9a3-91deab093531\", \"Reciever\":\"845f0dc7-37d0-426e-994e-43fc3ac83c08\"}"
+curl -X POST http://localhost:10001/sacrifice --header "Content-Type: application/json" --header "Authorization: Basic manuel-mtcgToken" -d "{\"Sacrifice\":\"4a2757d6-b1c3-47ac-b9a3-91deab093531\", \"Receiver\":\"845f0dc7-37d0-426e-994e-43fc3ac83c08\"}"
 echo.
 
 REM --------------------------------------------------
