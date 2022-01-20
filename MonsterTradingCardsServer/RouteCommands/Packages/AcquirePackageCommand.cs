@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.RouteCommands.Packages
 {
-    internal class AcquirePackageCommand : ProtectedRouteCommand
+    public class AcquirePackageCommand : ProtectedRouteCommand
     {
         private readonly ICardManager cardManager;
         private readonly IPackageManager packageManager;
@@ -34,7 +34,7 @@ namespace MonsterTradingCards.Server.RouteCommands.Packages
                     throw new Exception("Not enough Gold");
                 }
 
-                Package package = packageManager.GetRandomPackage();
+                Package package = packageManager.GetPackage();
                 userManager.AdjustGoldForUser(User, -5);
 
                 foreach (var card in package.Cards)

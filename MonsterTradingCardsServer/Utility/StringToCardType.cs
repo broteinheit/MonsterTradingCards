@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.Utility
 {
-    internal class StringToCardType
+    public class StringToCardType
     {
         public static (IElementType, ICardType) GetCardAndElementTypeFromString(string cardName)
         {

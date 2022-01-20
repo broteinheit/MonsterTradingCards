@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.RouteCommands.Sacrifice
 {
-    internal class SacrificeCommand : ProtectedRouteCommand
+    public class SacrificeCommand : ProtectedRouteCommand
     {
         private readonly ICardManager cardManager;
         private readonly IDeckManager deckManager;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.BattleLogic.Logger
 {
-    internal class BattleLogStringBuilder
+    public class BattleLogStringBuilder
     {
         public string GetLogString()
         {

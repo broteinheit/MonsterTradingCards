@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.BattleLogic.Logger
 {
-    internal class InMemoryLogger : IBattleLogger
+    public class InMemoryLogger : IBattleLogger
     {
         public InMemoryLogger()
         {

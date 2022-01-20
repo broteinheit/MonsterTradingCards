@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.BattleLogic.Cards.ElementType
 {
-    interface IElementType : IType
+    public interface IElementType : IType
     {
         //returns a damage multiplier based on the element type comparison
         public double Compare(IElementType otherElementType);

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.RouteCommands.Cards
 {
-    internal class ShowCardsCommand : ProtectedRouteCommand
+    public class ShowCardsCommand : ProtectedRouteCommand
     {
         private readonly ICardManager cardManager;
 

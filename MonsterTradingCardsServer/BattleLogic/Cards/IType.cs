@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.BattleLogic.Cards
 {
-    internal interface IType
+    public interface IType
     {
         string GetTypeName();
     }

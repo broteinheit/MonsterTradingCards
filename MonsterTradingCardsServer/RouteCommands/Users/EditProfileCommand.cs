@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.RouteCommands.Users
 {
-    internal class EditProfileCommand : ProtectedRouteCommand
+    public class EditProfileCommand : ProtectedRouteCommand
     {
         private UserInfo userInfo;
         private string username;
@@ -41,7 +41,7 @@ namespace MonsterTradingCards.Server.RouteCommands.Users
             catch (Exception ex)
             {
                 response.Payload = ex.Message;
-                response.StatusCode = StatusCode.InternalServerError;
+                response.StatusCode = StatusCode.publicServerError;
             }
             return response;
         }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.Models
 {
-    internal class SacrificeModel
+    public class SacrificeModel
     {
         public string Sacrifice { get; set; }
         public string Reciever { get; set; }

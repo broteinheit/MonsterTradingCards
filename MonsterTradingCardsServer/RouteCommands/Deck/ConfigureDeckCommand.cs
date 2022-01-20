@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.RouteCommands.Deck
 {
-    internal class ConfigureDeckCommand : ProtectedRouteCommand
+    public class ConfigureDeckCommand : ProtectedRouteCommand
     {
         private readonly IDeckManager deckManager;
         private readonly ICardManager cardManager;

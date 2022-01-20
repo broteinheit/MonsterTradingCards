@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.RouteCommands.Tradings
 {
-    internal class TradeCommand : ProtectedRouteCommand
+    public class TradeCommand : ProtectedRouteCommand
     {
         private readonly ITradingsManager tradingsManager;
         private string tradeId;

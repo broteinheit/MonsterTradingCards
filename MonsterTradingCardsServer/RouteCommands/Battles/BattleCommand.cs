@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.RouteCommands.Battles
 {
-    internal class BattleCommand : ProtectedRouteCommand
+    public class BattleCommand : ProtectedRouteCommand
     {
         private readonly GameManager lobbyManager;
 
@@ -45,7 +45,7 @@ namespace MonsterTradingCards.Server.RouteCommands.Battles
             catch (Exception ex)
             {
                 response.Payload = ex.StackTrace + "\n" + ex.Message;
-                response.StatusCode = StatusCode.InternalServerError;
+                response.StatusCode = StatusCode.publicServerError;
             }
 
             return response;

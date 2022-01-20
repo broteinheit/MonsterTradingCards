@@ -10,6 +10,6 @@ namespace MonsterTradingCards.Server.Managers
     public interface IPackageManager
     {
         void AddPackage(Package package);
-        Package GetRandomPackage();
+        Package GetPackage();
     }
 }

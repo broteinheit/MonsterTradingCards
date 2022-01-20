@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 namespace MonsterTradingCards.Server
 {
     [Serializable]
-    internal class UserNotFoundException : Exception
+    public class UserNotFoundException : Exception
     {
         public UserNotFoundException()
         {

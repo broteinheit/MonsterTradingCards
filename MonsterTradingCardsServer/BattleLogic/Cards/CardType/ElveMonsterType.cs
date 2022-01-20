@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MonsterTradingCards.Server.BattleLogic.Cards.CardType
 {
-    internal class ElveMonsterType : ICardType
+    public class ElveMonsterType : ICardType
     {
         public int ConsiderSpecialty(ICardType otherType, IElementType elementType)
         {

@@ -28,9 +28,9 @@ namespace MonsterTradingCards.Server.Managers
             }
         }
 
-        public Package GetRandomPackage()
+        public Package GetPackage()
         {
-            var cardIds = packageRepository.AcquireRandomPackage();
+            var cardIds = packageRepository.AcquirePackage();
             List<Card> cards = new List<Card>() 
             { 
                 cardRepository.GetCardById(cardIds[0]),
