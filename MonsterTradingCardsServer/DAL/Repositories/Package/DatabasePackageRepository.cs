@@ -31,7 +31,7 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Package
             EnsureTables();
         }
 
-        public List<string> AcquireRandomPackage()
+        public List<string> AcquirePackage()
         {
             var packageAmount = GetPackageCount();
             if (packageAmount <= 0)
@@ -39,15 +39,13 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Package
                 throw new ArgumentException("no Package available");
             }
 
-            var random = new Random();
-            int randomPackIdx = random.Next(0, packageAmount-1);
             string[] cardIds = new string[5];
 
             try
             {
                 //get Package
                 var cmd = new NpgsqlCommand(SelectPackageByIndex, _connection);
-                cmd.Parameters.AddWithValue("offset", 0);//randomPackIdx);
+                cmd.Parameters.AddWithValue("offset", 0);
 
                 lock (Database.dbLock)
                 {

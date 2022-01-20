@@ -11,7 +11,7 @@ namespace MonsterTradingCards.Server.Test
     public class TestsUserManager
     {
         [Test]
-        public void RegisterUser_ValidUser()
+        public void TestRegisterUser_ValidUser()
         {
             // arrange
             var userRepo = new Mock<IUserRepository>();
@@ -27,7 +27,7 @@ namespace MonsterTradingCards.Server.Test
         }
 
         [Test]
-        public void RegisterUser_InvalidUser()
+        public void TestRegisterUser_InvalidUser()
         {
             // arrange
             var userRepo = new Mock<IUserRepository>();
@@ -44,7 +44,7 @@ namespace MonsterTradingCards.Server.Test
         }
 
         [Test]
-        public void LoginUser_ValidUser()
+        public void TestLoginUser_ValidUser()
         {
             //arrange
             var userRepo = new Mock<IUserRepository>();
@@ -66,7 +66,7 @@ namespace MonsterTradingCards.Server.Test
         }
 
         [Test]
-        public void LoginUser_InvalidUser()
+        public void TestLoginUser_InvalidUser()
         {
             //arrange
             var userRepo = new Mock<IUserRepository>();

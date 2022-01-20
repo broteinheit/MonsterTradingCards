@@ -10,6 +10,6 @@ namespace MonsterTradingCards.Server.DAL.Repositories.Package
     public interface IPackageRepository
     {
         bool CreatePackage(Models.Package package);
-        List<string> AcquireRandomPackage();
+        List<string> AcquirePackage();
     }
 }

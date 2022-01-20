@@ -34,7 +34,7 @@ namespace MonsterTradingCards.Server.RouteCommands.Packages
                     throw new Exception("Not enough Gold");
                 }
 
-                Package package = packageManager.GetRandomPackage();
+                Package package = packageManager.GetPackage();
                 userManager.AdjustGoldForUser(User, -5);
 
                 foreach (var card in package.Cards)
